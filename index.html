@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phonix — Build edge dApps once. Run them everywhere.</title>
+  <meta name="description" content="The unified SDK for deploying confidential edge applications across decentralised compute networks. One interface, any provider." />
+  <meta property="og:title" content="Phonix SDK" />
+  <meta property="og:description" content="Build edge dApps once. Run them confidentially on millions of smartphones." />
+  <meta property="og:url" content="https://phonix.dev" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #111118;
+      --border:    #1e1e2e;
+      --accent:    #f97316;
+      --accent2:   #fb923c;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --code-bg:   #0d0d16;
+      --radius:    10px;
+      --max:       1100px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent2); }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-weight: 700; font-size: 1.1rem; color: var(--text);
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.75rem; font-size: 0.9rem; color: var(--muted); }
+    .nav-links a { color: var(--muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #000; font-weight: 600;
+      padding: 0.4rem 1.1rem; border-radius: 6px; font-size: 0.875rem;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--accent2); color: #000; }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      max-width: var(--max); margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(249,115,22,.12); color: var(--accent);
+      border: 1px solid rgba(249,115,22,.25);
+      border-radius: 100px; font-size: 0.8rem; font-weight: 600;
+      padding: 0.3rem 0.9rem; margin-bottom: 1.75rem;
+      letter-spacing: .03em;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), #facc15);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted); max-width: 560px; margin: 0 auto 2.5rem;
+    }
+    .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #000; font-weight: 700;
+      padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 1rem;
+      transition: background .2s, transform .1s;
+    }
+    .btn-primary:hover { background: var(--accent2); color: #000; transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--surface); color: var(--text); font-weight: 600;
+      padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 1rem;
+      border: 1px solid var(--border); transition: border-color .2s, transform .1s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--text); transform: translateY(-1px); }
+
+    /* ── Install strip ────────────────────────────────────── */
+    .install-strip {
+      max-width: 480px; margin: 3rem auto 0;
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.75rem 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem;
+    }
+    .install-strip .prompt { color: var(--accent); user-select: none; }
+    .install-strip code { color: var(--text); flex: 1; }
+    .copy-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 5px; padding: 0.2rem 0.6rem; font-size: 0.75rem;
+      cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Section shared ───────────────────────────────────── */
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: var(--max); margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--muted); max-width: 540px; margin-bottom: 3rem; font-size: 1.05rem; }
+
+    /* ── Providers ────────────────────────────────────────── */
+    .providers { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .provider-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+    .provider-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      transition: border-color .2s;
+    }
+    .provider-card:hover { border-color: var(--accent); }
+    .provider-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .provider-name { font-weight: 700; font-size: 1.05rem; }
+    .provider-badge {
+      font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem;
+      border-radius: 100px; background: rgba(249,115,22,.15); color: var(--accent);
+    }
+    .provider-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+    .provider-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--muted); }
+    .provider-meta span { display: flex; align-items: center; gap: 0.35rem; }
+
+    /* ── Code demo ────────────────────────────────────────── */
+    .demo { background: var(--bg); }
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+    @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+    .demo-steps { display: flex; flex-direction: column; gap: 1.5rem; }
+    .step { display: flex; gap: 1rem; }
+    .step-num {
+      flex-shrink: 0; width: 28px; height: 28px;
+      background: rgba(249,115,22,.15); color: var(--accent);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+    }
+    .step-content h4 { font-weight: 600; margin-bottom: 0.25rem; }
+    .step-content p { color: var(--muted); font-size: 0.9rem; }
+    .code-block {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .code-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1rem; font-size: 0.8rem; color: var(--muted);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .code-dots { display: flex; gap: 5px; }
+    .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #28ca41; }
+    .code-block pre {
+      padding: 1.25rem; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem; line-height: 1.65; overflow-x: auto;
+      color: #c9d1d9;
+    }
+    .kw { color: #ff79c6; }
+    .fn { color: #50fa7b; }
+    .str { color: #f1fa8c; }
+    .cm { color: #6272a4; }
+    .obj { color: #8be9fd; }
+    .num { color: #bd93f9; }
+
+    /* ── Features ─────────────────────────────────────────── */
+    .features { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+    .feature-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .feature-card h3 { font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem; }
+    .feature-card p { color: var(--muted); font-size: 0.875rem; }
+
+    /* ── CLI strip ────────────────────────────────────────── */
+    .cli-section { background: var(--bg); }
+    .cli-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; }
+    .cli-row {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.9rem 1.1rem;
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 0.75rem; align-items: start;
+    }
+    .cli-cmd { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent); white-space: nowrap; }
+    .cli-desc { color: var(--muted); font-size: 0.85rem; }
+
+    /* ── CTA ──────────────────────────────────────────────── */
+    .cta-section {
+      background: radial-gradient(ellipse at center, rgba(249,115,22,.08) 0%, transparent 70%),
+                  var(--surface);
+      border-top: 1px solid var(--border); text-align: center;
+    }
+    .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .cta-section p { color: var(--muted); font-size: 1.05rem; max-width: 480px; margin: 0 auto 2.5rem; }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      padding: 2rem; text-align: center;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--accent); }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+    /* ── Responsive nav ───────────────────────────────────── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">🔥 <span>Phonix</span></div>
+  <div class="nav-links">
+    <a href="#providers">Providers</a>
+    <a href="#demo">Quick start</a>
+    <a href="#features">Features</a>
+    <a href="https://github.com/deyzho/phonix" target="_blank">GitHub</a>
+  </div>
+  <a class="nav-cta" href="https://github.com/deyzho/phonix" target="_blank">Get started →</a>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="badge">Open Source · v0.2.0</div>
+  <h1>Build edge dApps once.<br /><em>Run them everywhere.</em></h1>
+  <p>The unified SDK for deploying confidential applications across decentralised compute networks. One interface, any provider.</p>
+  <div class="hero-ctas">
+    <a class="btn-primary" href="#demo">Quick start</a>
+    <a class="btn-secondary" href="https://github.com/deyzho/phonix" target="_blank">View on GitHub</a>
+  </div>
+  <div class="install-strip">
+    <span class="prompt">$</span>
+    <code id="install-cmd">npm install -g @phonix/cli</code>
+    <button class="copy-btn" onclick="copyInstall()">copy</button>
+  </div>
+</section>
+
+<!-- ── Providers ─────────────────────────────────────────────────────────── -->
+<section class="providers" id="providers">
+  <div class="section-inner">
+    <div class="section-label">Providers</div>
+    <h2 class="section-title">One SDK, three networks</h2>
+    <p class="section-sub">Deploy the same code to any supported DePIN provider without rewriting your application logic.</p>
+    <div class="provider-grid">
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-name">Acurast</div>
+          <div class="provider-badge">Supported</div>
+        </div>
+        <div class="provider-desc">237,000+ smartphone nodes running inside hardware Trusted Execution Environments. Your code and data are private — even from device owners.</div>
+        <div class="provider-meta">
+          <span>📱 TEE-based</span>
+          <span>🔑 P256 auth</span>
+          <span>⚡ nodejs / wasm</span>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-name">Fluence</div>
+          <div class="provider-badge">Supported</div>
+        </div>
+        <div class="provider-desc">Decentralised serverless cloud built on libp2p. Deploy spells to a permissionless peer-to-peer network of compute providers.</div>
+        <div class="provider-meta">
+          <span>🌐 P2P relay</span>
+          <span>🔑 Ed25519</span>
+          <span>⚡ nodejs</span>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-name">Koii</div>
+          <div class="provider-badge">Supported</div>
+        </div>
+        <div class="provider-desc">Community-owned compute network with Solana-compatible task nodes. Ideal for recurring data tasks, oracles, and agent workloads.</div>
+        <div class="provider-meta">
+          <span>🔗 Task nodes</span>
+          <span>🔑 Solana keypair</span>
+          <span>⚡ nodejs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Demo ──────────────────────────────────────────────────────────────── -->
+<section class="demo" id="demo">
+  <div class="section-inner">
+    <div class="section-label">Quick start</div>
+    <h2 class="section-title">From zero to deployed in minutes</h2>
+    <p class="section-sub">One CLI, one config file, one client API — regardless of which network you deploy to.</p>
+    <div class="demo-grid">
+      <div class="demo-steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Initialise your project</h4>
+            <p>Choose a provider and template. Phonix generates your config and entry point.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Configure credentials</h4>
+            <p>The <code style="color:var(--accent);font-size:.85em">phonix auth</code> wizard generates and stores all required keys. Your <code style="color:var(--accent);font-size:.85em">.env</code> is locked to owner-only permissions and never committed.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Test locally</h4>
+            <p>Run <code style="color:var(--accent);font-size:.85em">phonix run-local</code> to simulate the full provider runtime on your machine — no network required.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Deploy and call</h4>
+            <p>One command bundles, uploads to IPFS, and registers on-chain. Then call from any JavaScript environment with <code style="color:var(--accent);font-size:.85em">@phonix/sdk</code>.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            your-app/index.ts
+          </div>
+          <pre><span class="cm">// Deploy once — run on edge nodes</span>
+<span class="kw">import</span> { <span class="obj">PhonixClient</span> } <span class="kw">from</span> <span class="str">'@phonix/sdk'</span>;
+
+<span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">PhonixClient</span>({
+  provider: <span class="str">'acurast'</span>,
+  secretKey: process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
+});
+
+<span class="kw">await</span> client.<span class="fn">connect</span>();
+
+<span class="cm">// Listen for results from the TEE</span>
+client.<span class="fn">onMessage</span>((msg) => {
+  <span class="kw">const</span> { result } = msg.payload <span class="kw">as</span> { result: <span class="obj">string</span> };
+  console.<span class="fn">log</span>(<span class="str">'Result:'</span>, result);
+});
+
+<span class="cm">// Send a prompt to a processor node</span>
+<span class="kw">await</span> client.<span class="fn">send</span>(<span class="str">'0xproc1...'</span>, {
+  requestId: <span class="str">'req-001'</span>,
+  prompt: <span class="str">'Summarize: The quick brown fox...'</span>,
+});
+
+client.<span class="fn">disconnect</span>();</pre>
+        </div>
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-header">
+            <div class="code-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            terminal
+          </div>
+          <pre><span class="cm"># Initialise project</span>
+<span class="fn">phonix</span> init
+
+<span class="cm"># Set up credentials interactively</span>
+<span class="fn">phonix</span> auth
+
+<span class="cm"># Test without deploying</span>
+<span class="fn">phonix</span> run-local
+
+<span class="cm"># Deploy to the network</span>
+<span class="fn">phonix</span> deploy
+
+<span class="cm"># ✔ Deployment live!</span>
+<span class="cm"># Processors: 3 matched</span>
+<span class="cm">#   • 0xproc1...</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ──────────────────────────────────────────────────────────── -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Built for production</h2>
+    <p class="section-sub">Security and reliability are not afterthoughts — they are built into every layer of the SDK.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Confidential by default</h3>
+        <p>Your code runs inside hardware TEEs. Prompts, responses, and logic are private — even from device owners and network operators.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>SSRF & DNS rebinding protection</h3>
+        <p>All HTTP calls validate URLs and resolve hostnames to IPs before opening connections, blocking requests to internal infrastructure.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔑</div>
+        <h3>Safe credential management</h3>
+        <p>The auth wizard generates keys locally, writes them with chmod 600, and enforces .gitignore — secrets never leave your machine accidentally.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Single-file bundles</h3>
+        <p>esbuild compiles your TypeScript to a single optimised IIFE with env vars injected at build time. No runtime dependencies on the edge node.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧪</div>
+        <h3>Local testing runtime</h3>
+        <p>The mock runtime simulates the full provider API locally — WebSocket messages, HTTP callbacks, fulfill — so you iterate without touching the network.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>Provider-agnostic API</h3>
+        <p>Switch from Acurast to Fluence to Koii by changing one config field. Your application code stays identical across all providers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CLI ───────────────────────────────────────────────────────────────── -->
+<section class="cli-section">
+  <div class="section-inner">
+    <div class="section-label">CLI</div>
+    <h2 class="section-title">Everything from the terminal</h2>
+    <p class="section-sub">The full deployment lifecycle in a single tool.</p>
+    <div class="cli-grid">
+      <div class="cli-row">
+        <div class="cli-cmd">phonix init</div>
+        <div class="cli-desc">Interactive setup — generates phonix.json, .env, and template files</div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-cmd">phonix auth</div>
+        <div class="cli-desc">Credential wizard — generates and stores keys for your provider</div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-cmd">phonix deploy</div>
+        <div class="cli-desc">Bundle, upload to IPFS, and register deployment on-chain</div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-cmd">phonix run-local</div>
+        <div class="cli-desc">Run your script locally with a full mock provider runtime</div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-cmd">phonix status</div>
+        <div class="cli-desc">List deployments, processor IDs, and live status</div>
+      </div>
+      <div class="cli-row">
+        <div class="cli-cmd">phonix send &lt;id&gt; &lt;msg&gt;</div>
+        <div class="cli-desc">Send a test message directly to a processor node</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────────────────────────────── -->
+<section class="cta-section">
+  <div class="section-inner">
+    <h2>Start building today</h2>
+    <p>Open source, MIT licensed, and ready for your first deployment.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://github.com/deyzho/phonix" target="_blank">View on GitHub</a>
+      <a class="btn-secondary" href="https://github.com/deyzho/phonix/tree/main/templates" target="_blank">Browse templates</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/deyzho/phonix" target="_blank">GitHub</a>
+    <a href="https://github.com/deyzho/phonix/blob/main/README.md" target="_blank">Docs</a>
+    <a href="https://github.com/deyzho/phonix/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
+    <a href="https://github.com/deyzho/phonix/blob/main/ROADMAP.md" target="_blank">Roadmap</a>
+    <a href="https://github.com/deyzho/phonix/blob/main/LICENSE" target="_blank">MIT License</a>
+  </div>
+  <p>Phonix is not affiliated with Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.</p>
+</footer>
+
+<script>
+  function copyInstall() {
+    navigator.clipboard.writeText('npm install -g @phonix/cli').then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'copied!';
+      setTimeout(() => { btn.textContent = 'copy'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
