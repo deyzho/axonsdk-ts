@@ -1,0 +1,24 @@
+{
+  "name": "phonix-nextjs-example",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Example Next.js app using @phonix/sdk for confidential inference",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@phonix/sdk": "*",
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.4.0"
+  }
+}

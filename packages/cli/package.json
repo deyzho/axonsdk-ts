@@ -1,0 +1,36 @@
+{
+  "name": "@phonix/cli",
+  "version": "0.1.0",
+  "description": "Command-line tool for deploying Phonix edge dApps",
+  "type": "module",
+  "bin": {
+    "phonix": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@phonix/sdk": "*",
+    "commander": "^12.0.0",
+    "inquirer": "^8.2.6",
+    "chalk": "^5.0.0",
+    "ora": "^8.0.0",
+    "update-notifier": "^7.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/inquirer": "^8.2.10",
+    "@types/update-notifier": "^6.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

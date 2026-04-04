@@ -1,0 +1,15 @@
+{
+  "projectName": "phonix-oracle",
+  "provider": "acurast",
+  "runtime": "nodejs",
+  "entryFile": "src/index.ts",
+  "schedule": {
+    "type": "interval",
+    "intervalMs": 60000,
+    "durationMs": 2592000000
+  },
+  "replicas": 1,
+  "maxCostPerExecution": 500000,
+  "environment": {},
+  "destinations": []
+}

@@ -1,0 +1,125 @@
+import { describe, it, expect } from 'vitest';
+import { PhonixClient } from '../client.js';
+import { PhonixError } from '../types.js';
+import { AcurastProvider } from '../providers/acurast/index.js';
+import { FluenceProvider } from '../providers/fluence/index.js';
+import { KoiiProvider } from '../providers/koii/index.js';
+
+describe('PhonixClient constructor', () => {
+  it('should default to the acurast provider', () => {
+    const client = new PhonixClient({ secretKey: 'dummy' });
+    expect(client.providerName).toBe('acurast');
+  });
+
+  it('should select fluence provider when specified', () => {
+    const client = new PhonixClient({ provider: 'fluence', secretKey: 'dummy' });
+    expect(client.providerName).toBe('fluence');
+  });
+
+  it('should select koii provider when specified', () => {
+    const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
+    expect(client.providerName).toBe('koii');
+  });
+
+  it('should use PHONIX_SECRET_KEY env var if secretKey not provided', () => {
+    const original = process.env['PHONIX_SECRET_KEY'];
+    process.env['PHONIX_SECRET_KEY'] = 'env-secret-key';
+    try {
+      const client = new PhonixClient();
+      expect(client.providerName).toBe('acurast'); // just checking it constructs
+    } finally {
+      if (original === undefined) {
+        delete process.env['PHONIX_SECRET_KEY'];
+      } else {
+        process.env['PHONIX_SECRET_KEY'] = original;
+      }
+    }
+  });
+});
+
+describe('PhonixClient.connect()', () => {
+  it('should throw PhonixError if no secret key is available', async () => {
+    const original = process.env['PHONIX_SECRET_KEY'];
+    delete process.env['PHONIX_SECRET_KEY'];
+    try {
+      const client = new PhonixClient({ secretKey: '' });
+      await expect(client.connect()).rejects.toBeInstanceOf(PhonixError);
+    } finally {
+      if (original !== undefined) {
+        process.env['PHONIX_SECRET_KEY'] = original;
+      }
+    }
+  });
+});
+
+describe('Provider selection', () => {
+  it('AcurastProvider should have name "acurast"', () => {
+    const p = new AcurastProvider();
+    expect(p.name).toBe('acurast');
+  });
+
+  it('FluenceProvider should have name "fluence"', () => {
+    const p = new FluenceProvider();
+    expect(p.name).toBe('fluence');
+  });
+
+  it('KoiiProvider should have name "koii"', () => {
+    const p = new KoiiProvider();
+    expect(p.name).toBe('koii');
+  });
+});
+
+describe('Provider implementations are real (not stubs)', () => {
+  it('FluenceProvider should return a CostEstimate (not throw NotImplemented)', async () => {
+    const p = new FluenceProvider();
+    await expect(
+      p.estimate({ runtime: 'nodejs', code: '', schedule: { type: 'on-demand' } })
+    ).resolves.toMatchObject({ provider: 'fluence', token: 'FLT' });
+  });
+
+  it('FluenceProvider.listDeployments() should return an array', async () => {
+    const p = new FluenceProvider();
+    await expect(p.listDeployments()).resolves.toBeInstanceOf(Array);
+  });
+
+  it('KoiiProvider should return a CostEstimate (not throw NotImplemented)', async () => {
+    const p = new KoiiProvider();
+    await expect(
+      p.estimate({ runtime: 'nodejs', code: '', schedule: { type: 'on-demand' } })
+    ).resolves.toMatchObject({ provider: 'koii', token: 'KOII' });
+  });
+
+  it('KoiiProvider.listDeployments() should return an array', async () => {
+    const p = new KoiiProvider();
+    await expect(p.listDeployments()).resolves.toBeInstanceOf(Array);
+  });
+
+  it('FluenceProvider.onMessage() should return an unsubscribe function', () => {
+    const p = new FluenceProvider();
+    const unsub = p.onMessage(() => {});
+    expect(typeof unsub).toBe('function');
+  });
+
+  it('KoiiProvider.onMessage() should return an unsubscribe function', () => {
+    const p = new KoiiProvider();
+    const unsub = p.onMessage(() => {});
+    expect(typeof unsub).toBe('function');
+  });
+});
+
+describe('PhonixClient.disconnect()', () => {
+  it('should not throw if not connected', () => {
+    const client = new PhonixClient({ secretKey: 'dummy' });
+    expect(() => client.disconnect()).not.toThrow();
+  });
+
+  it('should not throw for fluence client if not connected', () => {
+    const client = new PhonixClient({ provider: 'fluence', secretKey: 'dummy' });
+    expect(() => client.disconnect()).not.toThrow();
+  });
+
+  it('should not throw for koii client if not connected', () => {
+    const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
+    expect(() => client.disconnect()).not.toThrow();
+  });
+});

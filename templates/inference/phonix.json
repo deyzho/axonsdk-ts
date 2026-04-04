@@ -1,0 +1,18 @@
+{
+  "projectName": "phonix-inference",
+  "provider": "acurast",
+  "runtime": "nodejs",
+  "entryFile": "src/index.ts",
+  "schedule": {
+    "type": "on-demand",
+    "durationMs": 86400000
+  },
+  "replicas": 3,
+  "maxCostPerExecution": 1000000,
+  "environment": {
+    "INFERENCE_API_URL": "",
+    "INFERENCE_API_KEY": "",
+    "INFERENCE_MODEL": "llama3"
+  },
+  "destinations": []
+}
