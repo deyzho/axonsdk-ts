@@ -39,11 +39,11 @@
   "homepage": "https://phonix.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/phonix.git",
+    "url": "https://github.com/deyzho/phonixsdk.git",
     "directory": "packages/sdk"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/phonix/issues"
+    "url": "https://github.com/deyzho/phonixsdk/issues"
   },
   "engines": {
     "node": ">=20.0.0"

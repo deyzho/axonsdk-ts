@@ -97,7 +97,7 @@ phonix deploy
 
 ## Documentation
 
-Full documentation at [phonix.dev](https://phonix.dev) and the [GitHub repository](https://github.com/deyzho/phonix).
+Full documentation at [phonix.dev](https://phonix.dev) and the [GitHub repository](https://github.com/deyzho/phonixsdk).
 
 ## License
 

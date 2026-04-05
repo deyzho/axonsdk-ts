@@ -502,7 +502,7 @@ phonix/
 
 ```bash
 # Clone
-git clone https://github.com/deyzho/phonix.git
+git clone https://github.com/deyzho/phonixsdk.git
 cd phonix
 
 # Install dependencies

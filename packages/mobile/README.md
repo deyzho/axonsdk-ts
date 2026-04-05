@@ -111,7 +111,7 @@ const key = await storage.loadSecretKey();
 
 ## Documentation
 
-Full docs at [phonix.dev](https://phonix.dev) · [GitHub](https://github.com/deyzho/phonix)
+Full docs at [phonix.dev](https://phonix.dev) · [GitHub](https://github.com/deyzho/phonixsdk)
 
 ## License
 
