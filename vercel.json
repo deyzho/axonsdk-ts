@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "echo 'static site — no build required'",
   "outputDirectory": ".",
   "rewrites": [
