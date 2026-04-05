@@ -315,7 +315,7 @@
 
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="badge">Open Source · v0.2.0 · Now with iOS &amp; Android</div>
+  <div class="badge">Open Source · v0.2.0 · Now on npm</div>
   <h1>Build edge dApps once.<br /><em>Run them everywhere.</em></h1>
   <p>The unified SDK for deploying confidential applications across decentralised compute networks — and calling them from any iOS, Android, or JavaScript app.</p>
   <div class="hero-ctas">
@@ -324,8 +324,22 @@
   </div>
   <div class="install-strip">
     <span class="prompt">$</span>
-    <code id="install-cmd">npm install -g @phonix/cli</code>
+    <code id="install-cmd">npm install -g @phonixsdk/cli</code>
     <button class="copy-btn" onclick="copyInstall()">copy</button>
+  </div>
+  <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
+    <a href="https://www.npmjs.com/package/@phonixsdk/sdk" target="_blank">
+      <img src="https://img.shields.io/npm/v/@phonixsdk/sdk?label=%40phonixsdk%2Fsdk&color=f97316&style=flat-square" alt="@phonixsdk/sdk on npm" />
+    </a>
+    <a href="https://www.npmjs.com/package/@phonixsdk/mobile" target="_blank">
+      <img src="https://img.shields.io/npm/v/@phonixsdk/mobile?label=%40phonixsdk%2Fmobile&color=f97316&style=flat-square" alt="@phonixsdk/mobile on npm" />
+    </a>
+    <a href="https://www.npmjs.com/package/@phonixsdk/cli" target="_blank">
+      <img src="https://img.shields.io/npm/v/@phonixsdk/cli?label=%40phonixsdk%2Fcli&color=f97316&style=flat-square" alt="@phonixsdk/cli on npm" />
+    </a>
+    <a href="https://github.com/deyzho/phonix" target="_blank">
+      <img src="https://img.shields.io/github/license/deyzho/phonix?color=f97316&style=flat-square" alt="License" />
+    </a>
   </div>
 </section>
 
@@ -724,7 +738,7 @@ router.health().forEach(h =&gt; {
       <div class="feature-card">
         <div class="feature-icon">📱</div>
         <h3>iOS &amp; Android ready</h3>
-        <p><code style="font-size:.8em;color:var(--accent)">@phonix/mobile</code> brings React hooks, context, and AppState lifecycle to your React Native and Expo apps — iOS Keychain, Android Keystore, zero native modules.</p>
+        <p><code style="font-size:.8em;color:var(--accent)">@phonixsdk/mobile</code> brings React hooks, context, and AppState lifecycle to your React Native and Expo apps — iOS Keychain, Android Keystore, zero native modules.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
@@ -774,10 +788,10 @@ router.health().forEach(h =&gt; {
 <section class="cta-section">
   <div class="section-inner">
     <h2>Start building today</h2>
-    <p>Open source, MIT licensed, and ready for your first deployment.</p>
+    <p>Open source, Apache-2.0 licensed, and live on npm today.</p>
     <div class="hero-ctas">
-      <a class="btn-primary" href="https://github.com/deyzho/phonix" target="_blank">View on GitHub</a>
-      <a class="btn-secondary" href="https://github.com/deyzho/phonix/tree/main/templates" target="_blank">Browse templates</a>
+      <a class="btn-primary" href="https://www.npmjs.com/package/@phonixsdk/sdk" target="_blank">View on npm →</a>
+      <a class="btn-secondary" href="https://github.com/deyzho/phonix" target="_blank">View on GitHub</a>
     </div>
   </div>
 </section>
@@ -789,14 +803,15 @@ router.health().forEach(h =&gt; {
     <a href="https://github.com/deyzho/phonix/blob/main/README.md" target="_blank">Docs</a>
     <a href="https://github.com/deyzho/phonix/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a>
     <a href="https://github.com/deyzho/phonix/blob/main/ROADMAP.md" target="_blank">Roadmap</a>
-    <a href="https://github.com/deyzho/phonix/blob/main/LICENSE" target="_blank">MIT License</a>
+    <a href="https://www.npmjs.com/package/@phonixsdk/sdk" target="_blank">npm</a>
+    <a href="https://github.com/deyzho/phonix/blob/main/packages/sdk/LICENSE" target="_blank">Apache-2.0</a>
   </div>
   <p>Phonix is not affiliated with Acurast, Fluence, Koii, or Akash Network. Provider names and trademarks belong to their respective owners.</p>
 </footer>
 
 <script>
   function copyInstall() {
-    navigator.clipboard.writeText('npm install -g @phonix/cli').then(() => {
+    navigator.clipboard.writeText('npm install -g @phonixsdk/cli').then(() => {
       const btn = document.querySelector('.copy-btn');
       btn.textContent = 'copied!';
       setTimeout(() => { btn.textContent = 'copy'; }, 2000);

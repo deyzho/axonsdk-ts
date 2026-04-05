@@ -1,0 +1,80 @@
+name: Publish to npm
+
+# Triggers on version tags: v0.2.1, v1.0.0, etc.
+# To release:
+#   1. Bump versions in package.json files
+#   2. git tag v0.2.1 && git push origin v0.2.1
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm install --legacy-peer-deps
+
+      # ── @phonixsdk/sdk ────────────────────────────────────────────────────
+      - name: Build SDK
+        working-directory: packages/sdk
+        run: npm run build
+
+      - name: Publish @phonixsdk/sdk
+        working-directory: packages/sdk
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # ── @phonixsdk/mobile ─────────────────────────────────────────────────
+      - name: Publish @phonixsdk/mobile
+        working-directory: packages/mobile
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # ── @phonixsdk/cli ────────────────────────────────────────────────────
+      - name: Install CLI dependencies
+        working-directory: packages/cli
+        run: npm install --legacy-peer-deps
+
+      - name: Build CLI
+        working-directory: packages/cli
+        run: npm run build
+
+      - name: Publish @phonixsdk/cli
+        working-directory: packages/cli
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # ── Post-publish notification ─────────────────────────────────────────────
+  notify:
+    name: Tag release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true

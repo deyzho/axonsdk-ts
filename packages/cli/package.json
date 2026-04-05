@@ -1,12 +1,39 @@
 {
-  "name": "@phonix/cli",
+  "name": "@phonixsdk/cli",
   "version": "0.1.0",
-  "description": "Command-line tool for deploying Phonix edge dApps",
+  "description": "Command-line tool for deploying and managing Phonix edge applications across DePIN networks.",
   "type": "module",
   "bin": {
     "phonix": "./dist/index.js"
   },
   "main": "./dist/index.js",
+  "keywords": [
+    "phonix",
+    "depin",
+    "cli",
+    "edge-compute",
+    "acurast",
+    "akash",
+    "fluence",
+    "koii",
+    "web3",
+    "tee",
+    "confidential-computing"
+  ],
+  "author": "Phonix <hello@phonix.dev>",
+  "license": "Apache-2.0",
+  "homepage": "https://phonix.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deyzho/phonix.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/deyzho/phonix/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -14,23 +41,22 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@phonixsdk/sdk": "*",
+    "@phonixsdk/sdk": "^0.2.0",
+    "chalk": "^5.0.0",
     "commander": "^12.0.0",
     "inquirer": "^8.2.6",
-    "chalk": "^5.0.0",
     "ora": "^8.0.0",
     "update-notifier": "^7.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/node": "^20.0.0",
     "@types/inquirer": "^8.2.10",
-    "@types/update-notifier": "^6.0.0"
+    "@types/node": "^20.0.0",
+    "@types/update-notifier": "^6.0.0",
+    "typescript": "^5.4.0"
   },
   "files": [
-    "dist"
-  ],
-  "engines": {
-    "node": ">=18.0.0"
-  }
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
 }

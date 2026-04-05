@@ -1,243 +1,118 @@
-# @phonix/mobile
+# @phonixsdk/mobile
 
-React Native / Expo SDK for calling Phonix edge processors from iOS and Android apps.
+> React Native / Expo SDK for calling Phonix edge processors from iOS and Android apps.
 
-Deploy your processors once with the [Phonix CLI](../cli/) — then call them from any iOS or Android app using this package.
+[![npm](https://img.shields.io/npm/v/@phonixsdk/mobile)](https://www.npmjs.com/package/@phonixsdk/mobile)
+[![license](https://img.shields.io/npm/l/@phonixsdk/mobile)](./LICENSE)
 
-## Install
+## Overview
+
+`@phonixsdk/mobile` lets you call your deployed Phonix processors directly from iOS and Android apps. Deploy your processors with the Phonix CLI on your development machine, then call them from your mobile app using React hooks or the standalone client.
+
+**Supports:** Akash Network (HTTP) · Acurast (WebSocket) · Generic HTTPS
+
+## Installation
 
 ```bash
-npm install @phonix/mobile
+npm install @phonixsdk/mobile @phonixsdk/sdk
+# optional: expo-secure-store for secure key storage
+expo install expo-secure-store
 ```
-
-**Peer dependencies** (already in your Expo / React Native project):
-```bash
-npm install react react-native
-```
-
-**Optional — hardware-backed key storage:**
-```bash
-npx expo install expo-secure-store
-```
-
----
 
 ## Quick start
 
-### 1. Wrap your root component
+### Context + hooks (recommended)
 
 ```tsx
-// App.tsx
-import { PhonixProvider } from '@phonix/mobile';
+import { PhonixProvider, usePhonixContext, useMessages, useSend } from '@phonixsdk/mobile';
 
+// Wrap your app
 export default function App() {
   return (
-    <PhonixProvider
-      provider="akash"
-      secretKey={PHONIX_SECRET_KEY}
-      autoConnect
-    >
-      <NavigationContainer>
-        <MainStack />
-      </NavigationContainer>
+    <PhonixProvider provider="akash" secretKey={PHONIX_SECRET_KEY} autoConnect>
+      <HomeScreen />
     </PhonixProvider>
   );
 }
-```
 
-### 2. Use hooks in any screen
-
-```tsx
-// screens/InferenceScreen.tsx
-import { usePhonixContext, useMessages, useSend } from '@phonix/mobile';
-
-export function InferenceScreen() {
-  const { client, connected, connect } = usePhonixContext();
+// Use in any screen
+function HomeScreen() {
+  const { client, connected } = usePhonixContext();
   const messages = useMessages(client);
   const { send, sending } = useSend(client);
 
   return (
-    <View>
-      <Text>{connected ? '🟢 Connected' : '⚪ Offline'}</Text>
-
+    <>
       <Button
-        title={sending ? 'Sending...' : 'Run inference'}
+        title="Send"
         disabled={!connected || sending}
-        onPress={() =>
-          send(AKASH_LEASE_URL, {
-            requestId: crypto.randomUUID(),
-            prompt: 'Summarize the latest news',
-          })
-        }
+        onPress={() => send('https://your-lease.akash.network:31234', { prompt: 'Hello' })}
       />
-
-      {messages.map((msg, i) => (
-        <Text key={i}>{JSON.stringify(msg.payload)}</Text>
+      {messages.map((m, i) => (
+        <Text key={i}>{JSON.stringify(m.payload)}</Text>
       ))}
-    </View>
+    </>
   );
 }
 ```
 
----
+### Multi-provider router
 
-## Without context
-
-If you only need messaging in a single screen, use `usePhonix` directly:
+Route across multiple DePIN networks with automatic failover and health scoring:
 
 ```tsx
-import { usePhonix, useMessages, useSend } from '@phonix/mobile';
+import { usePhonixRouter } from '@phonixsdk/mobile';
 
-export function Screen() {
-  const { client, connected, connect, error } = usePhonix({
-    provider: 'akash',
-    secretKey: PHONIX_SECRET_KEY,
+function App() {
+  const { router, connected, health } = usePhonixRouter({
+    routes: [
+      { provider: 'akash',   endpoint: 'https://lease.akash.example.com', secretKey },
+      { provider: 'acurast', endpoint: 'wss://proxy.acurast.com',          secretKey },
+    ],
+    strategy: 'balanced',   // 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
+    autoConnect: true,
   });
-  const messages = useMessages(client);
-  const { send } = useSend(client);
 
   return (
-    <View>
-      <Button title="Connect" onPress={connect} disabled={connected} />
-      {error && <Text style={{ color: 'red' }}>{error.message}</Text>}
-      {messages.map((m, i) => <Text key={i}>{JSON.stringify(m.payload)}</Text>)}
-    </View>
+    <Button
+      title="Send"
+      disabled={!connected}
+      onPress={() => router?.send({ prompt: 'Hello from iOS' })}
+    />
   );
 }
 ```
 
----
+AppState listeners are attached automatically — the router pauses on background and resumes on foreground.
 
-## Secure key storage
+### Secure key storage
 
-The `SecureKeyStorage` class persists your secret key using the platform's hardware-backed store:
-
-| Platform | Storage |
-|---|---|
-| iOS | Keychain Services |
-| Android | Android Keystore |
-| No `expo-secure-store` | In-memory (session only) |
-
-```typescript
-import { SecureKeyStorage } from '@phonix/mobile';
+```tsx
+import { SecureKeyStorage } from '@phonixsdk/mobile';
 
 const storage = new SecureKeyStorage();
-
-// On first launch / after auth
-await storage.saveSecretKey(mySecretKey);
-
-// On every launch — restore the key
+await storage.saveSecretKey(myKey);   // iOS Keychain / Android Keystore
 const key = await storage.loadSecretKey();
-if (key) {
-  // initialise PhonixProvider with `secretKey={key}`
-}
-
-// On sign-out / key rotation
-await storage.deleteSecretKey();
 ```
 
----
+## API
 
-## AppState lifecycle
+| Export | Description |
+|---|---|
+| `MobilePhonixClient` | Messaging-only client — connect, send, onMessage |
+| `MobilePhonixRouter` | Multi-provider router with circuit breakers and health scoring |
+| `usePhonix(options)` | Hook — manages client lifecycle |
+| `usePhonixRouter(config)` | Hook — manages router lifecycle with AppState awareness |
+| `useMessages(client)` | Hook — reactive `Message[]` array, newest first |
+| `useSend(client)` | Hook — wraps `send()` with `sending` / `sendError` state |
+| `PhonixProvider` | React context — provides client to your component tree |
+| `usePhonixContext()` | Consumes the PhonixProvider context |
+| `SecureKeyStorage` | iOS Keychain / Android Keystore via `expo-secure-store` |
 
-The client automatically disconnects when your app moves to the background and reconnects when it returns to the foreground. This happens automatically when using `usePhonix` or `PhonixProvider`.
+## Documentation
 
-To opt out, set `reconnectOnForeground: false`:
-
-```tsx
-<PhonixProvider
-  provider="akash"
-  secretKey={key}
-  reconnectOnForeground={false}
->
-```
-
----
-
-## Supported providers
-
-| Provider | Transport | Deploy with |
-|---|---|---|
-| `'akash'` | HTTP POST to lease endpoint | `phonix auth akash && phonix deploy` |
-| `'acurast'` | WebSocket to Acurast proxy | `phonix auth acurast && phonix deploy` |
-| `'http'` | Generic HTTPS POST | Any HTTPS server |
-
-> `@phonix/mobile` handles **calling** processors, not deploying them. Use the [Phonix CLI](../cli/) on your development machine to deploy.
-
----
-
-## API reference
-
-### `MobilePhonixClient`
-
-```typescript
-const client = new MobilePhonixClient({
-  provider: 'akash' | 'acurast' | 'http',
-  secretKey: string,
-  wsUrl?: string,             // Acurast WebSocket URL (default: wss://proxy.acurast.com)
-  reconnectOnForeground?: boolean,  // default: true
-  maxResponseBytes?: number,  // default: 1 MiB
-});
-
-await client.connect();
-await client.send(endpoint, payload);
-client.onMessage(handler);  // returns unsubscribe fn
-await client.isLive(leaseUrl);  // Akash health probe
-client.disconnect();
-client.dispose();           // disconnect + remove AppState listener + clear handlers
-```
-
-### `usePhonix(options)`
-
-```typescript
-const {
-  client,       // MobilePhonixClient | null
-  connected,    // boolean
-  connecting,   // boolean
-  error,        // Error | null
-  connect,      // () => Promise<void>
-  disconnect,   // () => void
-} = usePhonix({ provider, secretKey, autoConnect?, ...});
-```
-
-### `useMessages(client, options?)`
-
-```typescript
-const messages = useMessages(client, {
-  maxMessages?: number,        // default: 50
-  trustedSenders?: string[],   // filter by processor ID
-});
-// returns Message[] — newest first
-```
-
-### `useSend(client)`
-
-```typescript
-const { send, sending, sendError } = useSend(client);
-await send(endpoint, payload);
-```
-
-### `PhonixProvider` / `usePhonixContext()`
-
-```tsx
-<PhonixProvider provider="akash" secretKey={key} autoConnect>
-  {children}
-</PhonixProvider>
-
-// In any child:
-const { client, connected, connect, disconnect, error } = usePhonixContext();
-```
-
----
-
-## Security
-
-- **SSRF protection** — all endpoints must be `https://` or `wss://`; private IPs (`192.168.x.x`, `10.x.x.x`, `127.x.x.x`, etc.) are blocked
-- **Response size cap** — responses over 1 MiB are rejected (configurable via `maxResponseBytes`)
-- **Prototype pollution prevention** — remote JSON payloads are checked for `__proto__`, `constructor`, and `prototype` keys
-
----
+Full docs at [phonix.dev](https://phonix.dev) · [GitHub](https://github.com/deyzho/phonix)
 
 ## License
 
-MIT
+Apache-2.0 © [Phonix](https://phonix.dev)
