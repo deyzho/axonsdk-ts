@@ -15,6 +15,7 @@ export type { IPhonixProvider } from './providers/base.js';
 export { AcurastProvider } from './providers/acurast/index.js';
 export { FluenceProvider } from './providers/fluence/index.js';
 export { KoiiProvider } from './providers/koii/index.js';
+export { AkashProvider } from './providers/akash/index.js';
 
 // Types
 export type {

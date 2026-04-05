@@ -18,6 +18,7 @@ import type { ProviderName } from '../types.js';
 import { acurastRuntimeBootstrap } from './adapters/acurast.js';
 import { fluenceRuntimeBootstrap } from './adapters/fluence.js';
 import { koiiRuntimeBootstrap } from './adapters/koii.js';
+import { akashRuntimeBootstrap } from './adapters/akash.js';
 import { mockRuntimeBootstrap } from './mock.js';
 
 export type RuntimeTarget = ProviderName | 'mock';
@@ -35,6 +36,8 @@ export function generateRuntimeBootstrap(target: RuntimeTarget): string {
       return fluenceRuntimeBootstrap();
     case 'koii':
       return koiiRuntimeBootstrap();
+    case 'akash':
+      return akashRuntimeBootstrap();
     case 'mock':
       return mockRuntimeBootstrap();
     default: {

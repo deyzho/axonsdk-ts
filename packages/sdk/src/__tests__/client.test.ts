@@ -4,6 +4,7 @@ import { PhonixError } from '../types.js';
 import { AcurastProvider } from '../providers/acurast/index.js';
 import { FluenceProvider } from '../providers/fluence/index.js';
 import { KoiiProvider } from '../providers/koii/index.js';
+import { AkashProvider } from '../providers/akash/index.js';
 
 describe('PhonixClient constructor', () => {
   it('should default to the acurast provider', () => {
@@ -19,6 +20,11 @@ describe('PhonixClient constructor', () => {
   it('should select koii provider when specified', () => {
     const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
     expect(client.providerName).toBe('koii');
+  });
+
+  it('should select akash provider when specified', () => {
+    const client = new PhonixClient({ provider: 'akash', secretKey: 'dummy' });
+    expect(client.providerName).toBe('akash');
   });
 
   it('should use PHONIX_SECRET_KEY env var if secretKey not provided', () => {
@@ -67,6 +73,11 @@ describe('Provider selection', () => {
     const p = new KoiiProvider();
     expect(p.name).toBe('koii');
   });
+
+  it('AkashProvider should have name "akash"', () => {
+    const p = new AkashProvider();
+    expect(p.name).toBe('akash');
+  });
 });
 
 describe('Provider implementations are real (not stubs)', () => {
@@ -105,6 +116,24 @@ describe('Provider implementations are real (not stubs)', () => {
     const unsub = p.onMessage(() => {});
     expect(typeof unsub).toBe('function');
   });
+
+  it('AkashProvider should return a CostEstimate', async () => {
+    const p = new AkashProvider();
+    await expect(
+      p.estimate({ runtime: 'nodejs', code: '', schedule: { type: 'on-demand', durationMs: 3_600_000 } })
+    ).resolves.toMatchObject({ provider: 'akash', token: 'AKT' });
+  });
+
+  it('AkashProvider.listDeployments() should return an array', async () => {
+    const p = new AkashProvider();
+    await expect(p.listDeployments()).resolves.toBeInstanceOf(Array);
+  });
+
+  it('AkashProvider.onMessage() should return an unsubscribe function', () => {
+    const p = new AkashProvider();
+    const unsub = p.onMessage(() => {});
+    expect(typeof unsub).toBe('function');
+  });
 });
 
 describe('PhonixClient.disconnect()', () => {
@@ -120,6 +149,11 @@ describe('PhonixClient.disconnect()', () => {
 
   it('should not throw for koii client if not connected', () => {
     const client = new PhonixClient({ provider: 'koii', secretKey: 'dummy' });
+    expect(() => client.disconnect()).not.toThrow();
+  });
+
+  it('should not throw for akash client if not connected', () => {
+    const client = new PhonixClient({ provider: 'akash', secretKey: 'dummy' });
     expect(() => client.disconnect()).not.toThrow();
   });
 });

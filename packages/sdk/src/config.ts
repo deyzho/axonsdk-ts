@@ -14,7 +14,7 @@ import { ConfigValidationError } from './types.js';
 
 // ─── Validation helpers ──────────────────────────────────────────────────────
 
-const VALID_PROVIDERS: ProviderName[] = ['acurast', 'fluence', 'koii'];
+const VALID_PROVIDERS: ProviderName[] = ['acurast', 'fluence', 'koii', 'akash'];
 const VALID_RUNTIMES: RuntimeType[] = ['nodejs', 'python', 'docker', 'wasm'];
 const VALID_SCHEDULE_TYPES = ['onetime', 'interval', 'on-demand'] as const;
 
@@ -223,6 +223,27 @@ export function generateEnv(provider: ProviderName = 'acurast'): string {
       '',
       '# Koii network: mainnet | testnet (default: mainnet)',
       'KOII_NETWORK=mainnet',
+      '',
+    ],
+    akash: [
+      '# Akash wallet mnemonic (12 or 24 words, BIP-39)',
+      '# Run: phonix auth akash  to import or generate one',
+      'AKASH_MNEMONIC=',
+      '',
+      '# IPFS API endpoint for uploading deployment bundles',
+      'AKASH_IPFS_URL=',
+      '',
+      '# IPFS API key',
+      'AKASH_IPFS_API_KEY=',
+      '',
+      '# Akash RPC node (default: https://rpc.akashnet.net:443)',
+      'AKASH_NODE=https://rpc.akashnet.net:443',
+      '',
+      '# Akash chain ID (default: akashnet-2)',
+      'AKASH_CHAIN_ID=akashnet-2',
+      '',
+      '# Key name in provider-services keyring (default: phonix)',
+      'AKASH_KEY_NAME=phonix',
       '',
     ],
   };

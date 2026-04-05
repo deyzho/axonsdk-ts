@@ -392,6 +392,117 @@ async function runKoiiAuth(cwd: string): Promise<void> {
   console.log();
 }
 
+// ─── Akash wizard ─────────────────────────────────────────────────────────────
+
+async function runAkashAuth(cwd: string): Promise<void> {
+  const chalk = await getChalk();
+  const inquirer = await getInquirer();
+  const ora = await getOra();
+
+  console.log();
+  console.log(chalk.bold('  Akash Credential Setup'));
+  console.log(chalk.gray('  Akash is a decentralised cloud marketplace. You need a BIP-39 mnemonic\n  and an IPFS endpoint to upload deployment bundles.\n'));
+
+  const existing = await readEnv(cwd);
+  const updates: Record<string, string> = {};
+
+  // ── 1. Akash mnemonic ─────────────────────────────────────────────────────
+  if (!existing['AKASH_MNEMONIC']) {
+    console.log(chalk.bold('  Akash wallet mnemonic'));
+    console.log(chalk.gray('  Akash uses a Cosmos-SDK wallet (12 or 24-word BIP-39 mnemonic).'));
+    console.log();
+    console.log(chalk.cyan('  Options:'));
+    console.log('   a) Create a new wallet with the Akash CLI:');
+    console.log(chalk.white('      provider-services keys add phonix'));
+    console.log('   b) Import an existing mnemonic from Keplr or another Cosmos wallet.');
+    console.log('   c) Fund testnet wallet (AKT) at:');
+    console.log(chalk.white('      https://faucet.sandbox-01.aksh.pw'));
+    console.log();
+
+    const { mnemonic } = await inquirer.prompt<{ mnemonic: string }>([
+      {
+        type: 'password',
+        name: 'mnemonic',
+        message: 'Paste your 12 or 24-word mnemonic (or Enter to skip):',
+        mask: '*',
+      },
+    ]);
+
+    if (mnemonic.trim()) {
+      const wordCount = mnemonic.trim().split(/\s+/).length;
+      if (wordCount !== 12 && wordCount !== 24) {
+        console.log(chalk.red(`  Error: a BIP-39 mnemonic must be exactly 12 or 24 words (got ${wordCount}).`));
+        console.log(chalk.gray('  Re-run \`phonix auth akash\` and paste the correct mnemonic.'));
+        return;
+      }
+      updates['AKASH_MNEMONIC'] = mnemonic.trim();
+    } else {
+      console.log(chalk.gray('  Skipped — add AKASH_MNEMONIC to .env manually before deploying.'));
+    }
+  } else {
+    console.log(chalk.green('  ✓ AKASH_MNEMONIC already set'));
+  }
+
+  // ── 2. IPFS endpoint ──────────────────────────────────────────────────────
+  if (!existing['AKASH_IPFS_URL'] && !existing['ACURAST_IPFS_URL']) {
+    console.log();
+    console.log(chalk.bold('  IPFS endpoint'));
+    console.log(chalk.gray('  Phonix uploads your bundle to IPFS; the Akash container fetches it at startup.'));
+    console.log();
+    console.log(chalk.cyan('  Options:'));
+    console.log('   a) Infura (free tier): https://app.infura.io  →  IPFS section');
+    console.log('   b) web3.storage: https://web3.storage');
+    console.log('   c) Local kubo node: https://localhost:5001');
+    console.log();
+
+    const { ipfsUrl, ipfsApiKey } = await inquirer.prompt<{
+      ipfsUrl: string;
+      ipfsApiKey: string;
+    }>([
+      {
+        type: 'input',
+        name: 'ipfsUrl',
+        message: 'IPFS endpoint URL (must be https://, or Enter to skip):',
+        default: '',
+      },
+      {
+        type: 'password',
+        name: 'ipfsApiKey',
+        message: 'IPFS API key (or Enter to skip):',
+        mask: '*',
+      },
+    ]);
+
+    if (ipfsUrl.trim()) updates['AKASH_IPFS_URL'] = ipfsUrl.trim();
+    if (ipfsApiKey.trim()) updates['AKASH_IPFS_API_KEY'] = ipfsApiKey.trim();
+  } else {
+    console.log(chalk.green('  ✓ IPFS endpoint already set'));
+  }
+
+  // ── 3. Akash node (optional) ──────────────────────────────────────────────
+  if (!existing['AKASH_NODE']) {
+    updates['AKASH_NODE'] = 'https://rpc.akashnet.net:443';
+    updates['AKASH_CHAIN_ID'] = 'akashnet-2';
+    updates['AKASH_KEY_NAME'] = 'phonix';
+    console.log(chalk.gray('  Defaults set: AKASH_NODE=https://rpc.akashnet.net:443, AKASH_KEY_NAME=phonix'));
+  }
+
+  if (Object.keys(updates).length > 0) {
+    const spinner = ora('Saving to .env...').start();
+    await updateEnv(cwd, updates);
+    await chmod(join(cwd, '.env'), 0o600).catch(() => {});
+    await enforceGitignore(cwd, chalk);
+    spinner.succeed('.env updated');
+  }
+
+  console.log();
+  console.log(chalk.bold.green('  Akash credentials configured.'));
+  console.log(chalk.gray('  Make sure provider-services CLI is installed:'));
+  console.log(chalk.white('    https://docs.akash.network/guides/cli/akash-provider-services'));
+  console.log(chalk.gray('  Then run: phonix deploy'));
+  console.log();
+}
+
 // ─── Main entry ───────────────────────────────────────────────────────────────
 
 export async function runAuth(
@@ -403,7 +514,7 @@ export async function runAuth(
 
   let resolvedProvider: ProviderName;
 
-  if (provider && ['acurast', 'fluence', 'koii'].includes(provider)) {
+  if (provider && ['acurast', 'fluence', 'koii', 'akash'].includes(provider)) {
     resolvedProvider = provider as ProviderName;
   } else {
     if (provider) {
@@ -419,6 +530,7 @@ export async function runAuth(
           { name: 'Acurast  — Smartphones as edge nodes (v0.1)', value: 'acurast' },
           { name: 'Fluence  — Decentralized cloud (v0.2)', value: 'fluence' },
           { name: 'Koii     — Community-owned compute (v0.2)', value: 'koii' },
+          { name: 'Akash    — Decentralised cloud marketplace (v0.2)', value: 'akash' },
         ],
       },
     ]);
@@ -441,6 +553,9 @@ export async function runAuth(
       break;
     case 'koii':
       await runKoiiAuth(cwd);
+      break;
+    case 'akash':
+      await runAkashAuth(cwd);
       break;
   }
 }

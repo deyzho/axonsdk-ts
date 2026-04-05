@@ -119,7 +119,7 @@ program
 // phonix auth [provider]
 program
   .command('auth [provider]')
-  .description('Set up credentials for a provider (acurast | fluence | koii)')
+  .description('Set up credentials for a provider (acurast | fluence | koii | akash)')
   .action(async (provider?: string) => {
     const { runAuth } = await import('./commands/auth.js');
     await runAuth(provider, process.cwd());
