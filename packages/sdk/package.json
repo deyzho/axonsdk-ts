@@ -1,7 +1,7 @@
 {
   "name": "@phonix/sdk",
   "version": "0.2.0",
-  "description": "Provider-abstracted client library for Phonix edge dApps",
+  "description": "Provider-abstracted SDK for deploying and calling confidential edge applications across DePIN compute networks (Acurast, Akash, Fluence, Koii).",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,6 +20,34 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
+  "keywords": [
+    "depin",
+    "edge",
+    "tee",
+    "acurast",
+    "akash",
+    "fluence",
+    "koii",
+    "decentralised-compute",
+    "web3",
+    "sdk",
+    "routing",
+    "confidential-computing"
+  ],
+  "author": "Phonix <hello@phonix.dev>",
+  "license": "Apache-2.0",
+  "homepage": "https://phonix.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deyzho/phonix.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/deyzho/phonix/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@acurast/dapp": "1.0.1",
     "esbuild": "^0.20.0"
@@ -36,6 +64,8 @@
     "@types/node": "^20.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ]
 }
