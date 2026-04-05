@@ -159,6 +159,86 @@ client.disconnect();
 
 ---
 
+## Multi-provider Router
+
+`PhonixRouter` routes requests across multiple DePIN providers simultaneously, picking the best one on every call based on real-time health data.
+
+```typescript
+import { PhonixRouter } from '@phonix/sdk';
+
+const router = new PhonixRouter({
+  providers: ['akash', 'acurast'],
+  secretKey: process.env.PHONIX_SECRET_KEY,
+
+  // Routing strategy: 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
+  strategy: 'latency',
+
+  // Processor selection within a provider: 'round-robin' | 'fastest' | 'random' | 'first'
+  processorStrategy: 'fastest',
+
+  // Circuit breaker — open after 3 consecutive failures, recover after 30s
+  failureThreshold: 3,
+  recoveryTimeoutMs: 30_000,
+
+  maxRetries: 2,
+  retryDelayMs: 200,
+});
+
+await router.connect();
+
+// Deploy to ALL providers in parallel
+const deployment = await router.deploy({
+  runtime: 'nodejs',
+  code: './dist/index.js',
+  schedule: { type: 'on-demand', durationMs: 86_400_000 },
+});
+console.log(`Deployed to ${deployment.providers.length} providers`);
+if (deployment.failedProviders.length) {
+  console.warn('Failed providers:', deployment.failedProviders);
+}
+
+// Send — automatically picks the highest-scoring callable provider
+await router.send({ prompt: 'Hello' });
+
+// Force a specific provider
+await router.send({ prompt: 'Hello' }, { preferProvider: 'akash' });
+
+// Receive messages from all providers
+const unsubscribe = router.onMessage((msg) => {
+  console.log(msg.payload);
+});
+
+// Health snapshot — one entry per provider
+router.health().forEach((h) => {
+  console.log(h.provider, {
+    score:       h.score.toFixed(3),
+    latencyMs:   h.latencyMs,
+    successRate: h.successRate,
+    circuit:     h.circuitState,
+  });
+});
+
+// Listen for routing events
+router.onEvent((event) => {
+  // event.type: 'provider:selected' | 'provider:failed' | 'circuit:opened' | 'retry' | 'failover' | ...
+  console.log(event.type, event.provider);
+});
+
+router.disconnect();
+```
+
+### Routing strategies
+
+| Strategy | Availability weight | Latency weight | Cost weight |
+|---|---|---|---|
+| `balanced` | 33% | 34% | 33% |
+| `latency` | 10% | 85% | 5% |
+| `availability` | 80% | 15% | 5% |
+| `cost` | 10% | 5% | 85% |
+| `round-robin` | — distributes evenly, ignores scores — | | |
+
+---
+
 ## Mobile SDK (iOS & Android)
 
 `@phonix/mobile` is a React Native / Expo package that lets you call your deployed Phonix processors directly from iOS and Android apps.
@@ -232,12 +312,43 @@ await storage.saveSecretKey(myKey); // iOS Keychain / Android Keystore
 const key = await storage.loadSecretKey();
 ```
 
+### Mobile Router
+
+Route across multiple DePIN endpoints from your React Native app with the same circuit-breaker and health-scoring logic as the server SDK:
+
+```tsx
+import { usePhonixRouter } from '@phonix/mobile';
+
+function App() {
+  const { router, connected, health } = usePhonixRouter({
+    routes: [
+      { provider: 'akash',   endpoint: 'https://lease.akash.example.com', secretKey },
+      { provider: 'acurast', endpoint: 'wss://proxy.acurast.com',          secretKey },
+    ],
+    strategy: 'balanced',
+    autoConnect: true,
+  });
+
+  return (
+    <Button
+      title="Send"
+      onPress={() => router?.send({ prompt: 'Hello from iOS' })}
+      disabled={!connected}
+    />
+  );
+}
+```
+
+AppState listeners are attached automatically — the router pauses on background and resumes on foreground.
+
 ### Mobile API
 
 | Export | Description |
 |---|---|
 | `MobilePhonixClient` | Messaging-only client (no deploy/esbuild, works in Hermes/JSC) |
+| `MobilePhonixRouter` | Multi-provider router with circuit breakers and health scoring |
 | `usePhonix(options)` | Hook — manages client lifecycle, returns `{ client, connected, connect, disconnect, error }` |
+| `usePhonixRouter(config)` | Hook — manages router lifecycle, returns `{ router, connected, health, connect, disconnect }` |
 | `useMessages(client)` | Hook — subscribes to messages, returns reactive `Message[]` array (newest first) |
 | `useSend(client)` | Hook — wraps `client.send()` with `sending` / `sendError` state |
 | `PhonixProvider` | React context — provides client to the full component tree |

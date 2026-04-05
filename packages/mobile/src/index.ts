@@ -24,13 +24,23 @@
 export { MobilePhonixClient } from './client.js';
 export type { MobilePhonixClientOptions, MobileProviderName } from './client.js';
 
+// ─── Router ───────────────────────────────────────────────────────────────────
+export { MobilePhonixRouter } from './router.js';
+export type {
+  MobileRouterConfig,
+  MobileRouteConfig,
+  MobileRoutingStrategy,
+  MobileRouteHealth,
+} from './router.js';
+
 // ─── Hooks ────────────────────────────────────────────────────────────────────
-export { usePhonix, useMessages, useSend } from './hooks.js';
+export { usePhonix, useMessages, useSend, usePhonixRouter } from './hooks.js';
 export type {
   UsePhonixOptions,
   UsePhonixResult,
   UseMessagesOptions,
   UseSendResult,
+  UsePhonixRouterResult,
 } from './hooks.js';
 
 // ─── Context ──────────────────────────────────────────────────────────────────

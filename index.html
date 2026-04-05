@@ -277,6 +277,20 @@
     }
     .install-row .prompt { color: var(--accent); user-select: none; }
 
+    /* ── Router section ──────────────────────────────────── */
+    .router-section { background: var(--surface); }
+    .router-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    @media (max-width: 860px) { .router-grid { grid-template-columns: 1fr; } }
+    .router-strategy-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .router-strategy-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.925rem; }
+    .router-strategy-list li .tag {
+      background: rgba(249,115,22,.12); color: var(--accent);
+      border: 1px solid rgba(249,115,22,.25);
+      border-radius: 4px; font-size: 0.75rem; font-weight: 700;
+      padding: 0.1rem 0.5rem; flex-shrink: 0; font-family: 'SF Mono','Fira Code',monospace;
+    }
+    .router-strategy-list li .desc { color: var(--muted); }
+
     /* ── Responsive nav ───────────────────────────────────── */
     @media (max-width: 600px) {
       .nav-links { display: none; }
@@ -292,6 +306,7 @@
     <a href="#providers">Providers</a>
     <a href="#demo">Quick start</a>
     <a href="#mobile">Mobile</a>
+    <a href="#router">Router</a>
     <a href="#features">Features</a>
     <a href="https://github.com/deyzho/phonix" target="_blank">GitHub</a>
   </div>
@@ -606,6 +621,69 @@ client.<span class="fn">disconnect</span>();</pre>
   </div>
 </section>
 
+<!-- ── Router ────────────────────────────────────────────────────────────── -->
+<section class="router-section" id="router">
+  <div class="section-inner">
+    <div class="router-grid">
+      <div>
+        <div class="section-label">Smart Routing</div>
+        <h2 class="section-title">Route across DePIN networks — automatically</h2>
+        <p style="color:var(--muted);font-size:1rem;margin-bottom:1.75rem;">
+          <code style="font-size:.85em;color:var(--accent)">PhonixRouter</code> manages multiple providers simultaneously.
+          On every request it scores each provider by health, latency, cost, and availability —
+          then sends to the best one. If that provider fails, it retries on the next.
+          Circuit breakers prevent routing to unhealthy nodes until they recover.
+        </p>
+        <ul class="router-strategy-list">
+          <li><span class="tag">balanced</span><span class="desc">Equal weight across availability, latency, and cost — the safe default.</span></li>
+          <li><span class="tag">latency</span><span class="desc">Always picks the fastest-responding provider. Good for interactive workloads.</span></li>
+          <li><span class="tag">availability</span><span class="desc">Maximises uptime. Prefers providers with the highest recent success rate.</span></li>
+          <li><span class="tag">cost</span><span class="desc">Routes to the cheapest option. Ideal for batch and background jobs.</span></li>
+          <li><span class="tag">round-robin</span><span class="desc">Distributes load evenly across all callable providers.</span></li>
+        </ul>
+        <p style="color:var(--muted);font-size:0.875rem;">
+          Works on Node.js (SDK) and React Native (mobile). The same routing engine powers both.
+        </p>
+      </div>
+      <div>
+        <pre class="code-block" style="font-size:0.78rem;"><code><span style="color:#64748b">// Server SDK</span>
+<span style="color:#fb923c">import</span> { PhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonix/sdk'</span>;
+
+<span style="color:#fb923c">const</span> router = <span style="color:#fb923c">new</span> <span style="color:#38bdf8">PhonixRouter</span>({
+  providers: [<span style="color:#86efac">'akash'</span>, <span style="color:#86efac">'acurast'</span>],
+  secretKey: process.env.PHONIX_SECRET_KEY,
+  strategy: <span style="color:#86efac">'latency'</span>,
+});
+
+<span style="color:#fb923c">await</span> router.connect();
+<span style="color:#fb923c">await</span> router.deploy(config);  <span style="color:#64748b">// deploys to all providers</span>
+
+<span style="color:#64748b">// Automatically picks fastest callable provider</span>
+<span style="color:#fb923c">await</span> router.send({ prompt: <span style="color:#86efac">'Hello'</span> });
+
+<span style="color:#64748b">// Health snapshot</span>
+router.health().forEach(h =&gt; {
+  console.log(h.provider, h.latencyMs, h.circuitState);
+});</code></pre>
+        <pre class="code-block" style="font-size:0.78rem;margin-top:1rem;"><code><span style="color:#64748b">// Mobile (React Native / Expo)</span>
+<span style="color:#fb923c">import</span> { usePhonixRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@phonix/mobile'</span>;
+
+<span style="color:#fb923c">const</span> { router, connected, health } = <span style="color:#38bdf8">usePhonixRouter</span>({
+  routes: [
+    { provider: <span style="color:#86efac">'akash'</span>,   endpoint: AKASH_URL,   secretKey },
+    { provider: <span style="color:#86efac">'acurast'</span>, endpoint: ACURAST_WS, secretKey },
+  ],
+  strategy: <span style="color:#86efac">'balanced'</span>,
+  autoConnect: <span style="color:#fb923c">true</span>,
+});
+
+<span style="color:#64748b">// AppState-aware: pauses on background, resumes on foreground</span>
+<span style="color:#fb923c">await</span> router?.send({ prompt: <span style="color:#86efac">'Hello from iOS'</span> });</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── Features ──────────────────────────────────────────────────────────── -->
 <section class="features" id="features">
   <div class="section-inner">
@@ -647,6 +725,11 @@ client.<span class="fn">disconnect</span>();</pre>
         <div class="feature-icon">📱</div>
         <h3>iOS &amp; Android ready</h3>
         <p><code style="font-size:.8em;color:var(--accent)">@phonix/mobile</code> brings React hooks, context, and AppState lifecycle to your React Native and Expo apps — iOS Keychain, Android Keystore, zero native modules.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Intelligent multi-provider routing</h3>
+        <p><code style="font-size:.8em;color:var(--accent)">PhonixRouter</code> scores every provider on latency, availability, and cost in real time. Circuit breakers open on failure and recover automatically — zero downtime across DePIN networks.</p>
       </div>
     </div>
   </div>

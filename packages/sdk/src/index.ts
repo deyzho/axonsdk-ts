@@ -42,3 +42,17 @@ export { generateP256KeyPair } from './providers/acurast/client.js';
 // Runtime abstraction — for advanced use (provider deploy functions use this internally)
 export { generateRuntimeBootstrap } from './runtime/index.js';
 export type { IPhonixRuntime, PhonixRuntimeHttp, PhonixRuntimeWs, RuntimeTarget } from './runtime/index.js';
+
+// Router — multi-provider routing with circuit breaking and health monitoring
+export { PhonixRouter } from './router/index.js';
+export type {
+  RouterConfig,
+  RouterDeployment,
+  RouterSendOptions,
+  ProviderHealthSnapshot,
+  RouterEvent,
+  RouterEventHandler,
+  RoutingStrategy,
+  ProcessorStrategy,
+  CircuitState,
+} from './router/types.js';

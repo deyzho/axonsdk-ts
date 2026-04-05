@@ -34,6 +34,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Message } from '@phonix/sdk';
 import { MobilePhonixClient } from './client.js';
 import type { MobilePhonixClientOptions } from './client.js';
+import { MobilePhonixRouter } from './router.js';
+import type { MobileRouterConfig, MobileProviderName, MobileRouteHealth } from './router.js';
 
 // ─── usePhonix ────────────────────────────────────────────────────────────────
 
@@ -195,6 +197,80 @@ export interface UseSendResult {
   sending: boolean;
   /** The last send error, if any. */
   sendError: Error | null;
+}
+
+// ─── usePhonixRouter ──────────────────────────────────────────────────────────
+
+export interface UsePhonixRouterResult {
+  router: MobilePhonixRouter | null;
+  connected: boolean;
+  connecting: boolean;
+  error: Error | null;
+  connect: () => Promise<void>;
+  disconnect: () => void;
+  health: MobileRouteHealth[];
+}
+
+/**
+ * Manage the full lifecycle of a MobilePhonixRouter in a React Native component.
+ * Automatically connects on mount when autoConnect is true.
+ */
+export function usePhonixRouter(
+  config: MobileRouterConfig & { autoConnect?: boolean }
+): UsePhonixRouterResult {
+  const [connected, setConnected] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [health, setHealth] = useState<MobileRouteHealth[]>([]);
+  const routerRef = useRef<MobilePhonixRouter | null>(null);
+
+  if (!routerRef.current) {
+    routerRef.current = new MobilePhonixRouter(config);
+  }
+
+  const connect = useCallback(async (): Promise<void> => {
+    const router = routerRef.current;
+    if (!router) return;
+    setConnecting(true);
+    setError(null);
+    try {
+      await router.connect();
+      router.attachAppStateListeners();
+      setConnected(true);
+      setHealth(router.health());
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)));
+      setConnected(false);
+    } finally {
+      setConnecting(false);
+    }
+  }, []);
+
+  const disconnect = useCallback((): void => {
+    routerRef.current?.dispose();
+    setConnected(false);
+    setHealth([]);
+  }, []);
+
+  useEffect(() => {
+    if (config.autoConnect) {
+      connect().catch(() => {});
+    }
+    return () => {
+      routerRef.current?.dispose();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return {
+    router: routerRef.current,
+    connected,
+    connecting,
+    error,
+    connect,
+    disconnect,
+    health,
+  };
 }
 
 /**
