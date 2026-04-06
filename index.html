@@ -352,6 +352,7 @@
   <div class="badge">Open Source · v0.2.0 · GPU + TEE Compute · Now on npm</div>
   <h1>Deploy AI to the edge.<br /><em>Any network, one SDK.</em></h1>
   <p>OpenAI costs too much. You're locked into one vendor. Your prompts hit centralised servers you don't control.<br/><strong style="color:var(--text)">There's a better way.</strong></p>
+  <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">Phonix is to edge compute what Ethers.js is to EVM chains —<br/>one interface, any provider.</p>
   <div class="hero-ctas">
     <a class="btn-primary" href="#inference">Switch from OpenAI →</a>
     <a class="btn-secondary" href="https://github.com/deyzho/phonixsdk" target="_blank">View on GitHub</a>
@@ -426,8 +427,8 @@
 <span class="kw">import</span> <span class="obj">OpenAI</span> <span class="kw">from</span> <span class="str">'openai'</span>;
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({
-  baseURL: <span class="str">'https://your-api.example.com/v1'</span>, <span style="color:#6272a4">// ← new</span>
-  apiKey:  process.env.<span class="obj">PHONIX_SECRET_KEY</span>,      <span style="color:#6272a4">// ← new</span>
+  baseURL: <span class="str">'https://&lt;your-app&gt;.vercel.app/v1'</span>, <span style="color:#6272a4">// ← your deployed handler</span>
+  apiKey:  process.env.<span class="obj">PHONIX_SECRET_KEY</span>,           <span style="color:#6272a4">// ← new</span>
 });
 
 <span style="color:#6272a4">// Everything else is identical ↓</span>
@@ -436,6 +437,7 @@
   messages: [{ role: <span class="str">'user'</span>, content: prompt }],
   stream:   <span class="kw">true</span>,
 });</pre>
+          <p style="font-size:0.78rem;color:var(--muted);margin:0.6rem 1rem 1rem;">→ Deploy the handler with <code style="color:var(--accent)">@phonixsdk/inference</code> — <a href="#demo">see setup guide ↓</a></p>
         </div>
       </div>
     </div>
@@ -591,7 +593,7 @@
 <span class="kw">import</span> { <span class="obj">PhonixClient</span> } <span class="kw">from</span> <span class="str">'@phonixsdk/sdk'</span>;
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">PhonixClient</span>({
-  provider: <span class="str">'acurast'</span>,
+  provider: <span class="str">'ionet'</span>,
   secretKey: process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
 });
 
@@ -845,7 +847,7 @@ client.<span class="fn">disconnect</span>();</pre>
 
 <span class="kw">const</span> client = <span class="kw">new</span> <span class="fn">OpenAI</span>({
   <span class="cm">// ← swap these two lines</span>
-  baseURL: <span class="str">'https://your-api.example.com/v1'</span>,
+  baseURL: <span class="str">'https://&lt;your-app&gt;.vercel.app/v1'</span>,
   apiKey:  process.env.<span class="obj">PHONIX_SECRET_KEY</span>,
 });
 
@@ -948,7 +950,7 @@ router.health().forEach(h =&gt; {
   <div class="section-inner">
     <div class="section-label">Features</div>
     <h2 class="section-title">Built for production</h2>
-    <p class="section-sub">Security and reliability are not afterthoughts — they are built into every layer of the SDK.</p>
+    <p class="section-sub">Security and reliability are not afterthoughts — built into every layer of the SDK and covered by 135 tests across all five providers.</p>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🔒</div>
