@@ -36,43 +36,6 @@ Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing cod
 
 ---
 
-## Python SDK
-
-Axon ships a Python-first SDK for AI/ML engineers and data scientists. Same provider interface, routing engine, and OpenAI-compatible inference handler — in idiomatic async Python.
-
-```bash
-pip install axon              # core SDK
-pip install axon[inference]   # + FastAPI OpenAI-compatible server
-pip install axon[aws]         # + boto3
-pip install axon[all]         # everything
-```
-
-```python
-from axon import AxonClient, AxonRouter, RoutingStrategy
-
-# Single provider
-async with AxonClient(provider="ionet", secret_key="...") as client:
-    deployment = await client.deploy(config)
-    await client.send(deployment.id, {"prompt": "Hello"})
-
-# Multi-provider with automatic routing
-async with AxonRouter(
-    providers=["ionet", "akash", "acurast"],
-    secret_key="...",
-    strategy=RoutingStrategy.LATENCY,
-) as router:
-    deployment = await router.deploy(config)
-```
-
-```bash
-axon init       # interactive project setup
-axon auth ionet # configure credentials
-axon deploy     # deploy your workload
-axon status     # list active deployments
-```
-
----
-
 ## Quick start (TypeScript / Node.js)
 
 ### 1. Install the CLI
@@ -194,6 +157,9 @@ await client.send(deployment.processorIds[0], { prompt: 'Hello' });
 
 // Receive results
 client.onMessage((msg) => console.log(msg.payload));
+
+// Teardown when done
+await client.teardown(deployment.id);
 
 client.disconnect();
 ```
@@ -412,7 +378,7 @@ axon/
 ## Development
 
 ```bash
-git clone https://github.com/deyzho/axonsdk.git
+git clone https://github.com/deyzho/phonixsdk.git
 cd axon
 npm install
 npm run build
@@ -427,7 +393,7 @@ Pull requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get start
 
 High-impact areas:
 - Integration tests against live provider sandboxes
-- Additional cloud provider support (AWS Lambda, Cloudflare Workers)
+- Additional cloud provider support
 - Template library
 
 ---
