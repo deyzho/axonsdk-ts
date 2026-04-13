@@ -49,6 +49,10 @@ export { generateP256KeyPair } from './providers/acurast/client.js';
 export { generateRuntimeBootstrap } from './runtime/index.js';
 export type { IAxonRuntime, AxonRuntimeHttp, AxonRuntimeWs, RuntimeTarget } from './runtime/index.js';
 
+// Pricing — live Azure API + documented static constants for all providers
+export { getPricing, STATIC_PRICING, clearPricingCache } from './pricing/index.js';
+export type { ProviderPricing } from './pricing/index.js';
+
 // Router — multi-provider routing with circuit breaking and health monitoring
 export { AxonRouter } from './router/index.js';
 export type {

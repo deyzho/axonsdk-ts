@@ -13,13 +13,9 @@
 
 import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
+import { getPricing } from '../../pricing/index.js';
 
 const CLOUD_RUN_API = 'https://run.googleapis.com/v2';
-
-// Cloud Run pricing (as of 2024)
-const COST_PER_VCPU_SEC = 0.00002400;
-const COST_PER_GIB_SEC = 0.00000250;
-const COST_PER_REQUEST = 0.0000004;
 
 export async function gcpDeploy(options: { config: DeploymentConfig }): Promise<Deployment> {
   const projectId = process.env['GCP_PROJECT_ID'];
@@ -105,8 +101,9 @@ export async function gcpEstimate(config: DeploymentConfig): Promise<CostEstimat
   const durationSec = (config.schedule?.durationMs ?? 3_600_000) / 1000;
   const replicas = config.replicas ?? 1;
 
-  const computeCost = (COST_PER_VCPU_SEC + COST_PER_GIB_SEC * 0.25) * durationSec * replicas;
-  const requestCost = COST_PER_REQUEST * replicas;
+  const pricing = await getPricing();
+  const computeCost = (pricing.gcpRunVcpuSec + pricing.gcpRunGibSec * 0.25) * durationSec * replicas;
+  const requestCost = pricing.gcpRunRequest * replicas;
   const usdEquivalent = computeCost + requestCost;
 
   return {

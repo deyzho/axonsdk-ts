@@ -13,11 +13,9 @@
 
 import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
+import { getPricing } from '../../pricing/index.js';
 
 const MACHINES_API = 'https://api.machines.dev/v1';
-
-// Fly.io pricing (shared-cpu-1x)
-const COST_PER_HOUR_USD = 0.0113; // shared-cpu-1x, 256 MB RAM
 
 export async function flyioDeploy(options: { config: DeploymentConfig }): Promise<Deployment> {
   const apiToken = process.env['FLY_API_TOKEN'];
@@ -113,9 +111,9 @@ export async function flyioDeploy(options: { config: DeploymentConfig }): Promis
 }
 
 export async function flyioEstimate(config: DeploymentConfig): Promise<CostEstimate> {
+  const pricing = await getPricing();
   const hours = (config.schedule?.durationMs ?? 3_600_000) / 3_600_000;
-  const replicas = config.replicas ?? 1;
-  const usdEquivalent = COST_PER_HOUR_USD * hours * replicas;
+  const usdEquivalent = pricing.flySharedCpu1xHour * hours * (config.replicas ?? 1);
 
   return {
     provider: 'flyio',

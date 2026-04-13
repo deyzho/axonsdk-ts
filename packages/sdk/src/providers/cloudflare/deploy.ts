@@ -12,12 +12,9 @@
 
 import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
+import { getPricing } from '../../pricing/index.js';
 
 const CF_API = 'https://api.cloudflare.com/client/v4';
-
-// Cloudflare Workers pricing (paid plan)
-const COST_PER_REQUEST = 0.0000005; // $0.50 per million requests
-const FREE_REQUESTS_PER_DAY = 100_000;
 
 export async function cloudflareDeploy(options: { config: DeploymentConfig }): Promise<Deployment> {
   const apiToken = process.env['CF_API_TOKEN'];
@@ -132,9 +129,9 @@ export async function cloudflareDeploy(options: { config: DeploymentConfig }): P
 
 export async function cloudflareEstimate(config: DeploymentConfig): Promise<CostEstimate> {
   const replicas = config.replicas ?? 1;
-  // Estimate based on invocation count — rough approximation
-  const estimatedRequests = Math.max(0, replicas - FREE_REQUESTS_PER_DAY);
-  const usdEquivalent = estimatedRequests * COST_PER_REQUEST;
+  const pricing = await getPricing();
+  const est = replicas * pricing.cfWorkerRequest;
+  const usdEquivalent = est;
 
   return {
     provider: 'cloudflare',

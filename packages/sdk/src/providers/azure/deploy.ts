@@ -14,12 +14,9 @@
 
 import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
+import { getPricing } from '../../pricing/index.js';
 
 const ACI_API_VERSION = '2023-05-01';
-
-// Azure Container Instances pricing (Linux, per second)
-const COST_PER_VCPU_SEC = 0.0000135;
-const COST_PER_GIB_SEC = 0.0000015;
 
 export async function azureDeploy(options: { config: DeploymentConfig }): Promise<Deployment> {
   const subscriptionId = process.env['AZURE_SUBSCRIPTION_ID'];
@@ -112,7 +109,8 @@ export async function azureEstimate(config: DeploymentConfig): Promise<CostEstim
   const replicas = config.replicas ?? 1;
   const memoryGib = 0.5;
 
-  const computeCost = (COST_PER_VCPU_SEC + COST_PER_GIB_SEC * memoryGib) * durationSec * replicas;
+  const pricing = await getPricing();
+  const computeCost = (pricing.azureAciVcpuSec + pricing.azureAciGibSec * memoryGib) * durationSec * replicas;
 
   return {
     provider: 'azure',

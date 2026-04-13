@@ -203,6 +203,20 @@ deployment:
 
 // ─── CLI helpers ──────────────────────────────────────────────────────────────
 
+/**
+ * Build a minimal child process environment that inherits only safe,
+ * non-sensitive variables from the parent process. Sensitive credentials
+ * are passed explicitly via `extra` and are never inherited from the full
+ * process.env spread.
+ */
+function buildMinimalEnv(extra: Record<string, string>): Record<string, string> {
+  const inherited: Record<string, string> = {};
+  for (const key of ['PATH', 'HOME', 'USER', 'USERPROFILE', 'TERM', 'LANG', 'TMP', 'TEMP', 'TMPDIR', 'XDG_CONFIG_HOME', 'XDG_DATA_HOME']) {
+    if (process.env[key]) inherited[key] = process.env[key]!;
+  }
+  return { ...inherited, ...extra };
+}
+
 async function resolveAkashCli(): Promise<string> {
   // Try `provider-services` first (newer Akash CLI), fall back to `akash`
   for (const bin of ['provider-services', 'akash']) {
@@ -226,7 +240,7 @@ async function runAkashCli(
   env?: Record<string, string>
 ): Promise<string> {
   const cliPath = await resolveAkashCli();
-  const mergedEnv = { ...process.env, ...(env ?? {}) } as Record<string, string>;
+  const mergedEnv = buildMinimalEnv(env ?? {});
   try {
     const { stdout } = await execFileAsync(cliPath, args, {
       env: mergedEnv,
@@ -237,6 +251,12 @@ async function runAkashCli(
     const execErr = err as { message: string; stderr?: string };
     const detail = execErr.stderr ? `\nstderr: ${execErr.stderr}` : '';
     throw new Error(`Akash CLI failed: ${execErr.message}${detail}`);
+  } finally {
+    // Overwrite sensitive values in the env dict — best-effort,
+    // GC may have already collected the strings, but limits window.
+    if (mergedEnv['AKASH_MNEMONIC']) {
+      mergedEnv['AKASH_MNEMONIC'] = '\x00'.repeat(mergedEnv['AKASH_MNEMONIC'].length);
+    }
   }
 }
 

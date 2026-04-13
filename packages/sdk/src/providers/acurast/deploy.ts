@@ -109,6 +109,20 @@ export async function bundleEntryFile(
 
 // ─── CLI shelling ────────────────────────────────────────────────────────────
 
+/**
+ * Build a minimal child process environment that inherits only safe,
+ * non-sensitive variables from the parent process. Sensitive credentials
+ * are passed explicitly via `extra` and are never inherited from the full
+ * process.env spread.
+ */
+function buildMinimalEnv(extra: Record<string, string>): Record<string, string> {
+  const inherited: Record<string, string> = {};
+  for (const key of ['PATH', 'HOME', 'USER', 'USERPROFILE', 'TERM', 'LANG', 'TMP', 'TEMP', 'TMPDIR', 'XDG_CONFIG_HOME', 'XDG_DATA_HOME']) {
+    if (process.env[key]) inherited[key] = process.env[key]!;
+  }
+  return { ...inherited, ...extra };
+}
+
 /** Resolve the path to the acurast CLI binary from @acurast/cli */
 async function resolveAcurastCli(): Promise<string> {
   // Try the locally installed @acurast/cli binary first
@@ -144,7 +158,7 @@ async function runAcurastCli(
   env?: Record<string, string>
 ): Promise<string> {
   const cliPath = await resolveAcurastCli();
-  const mergedEnv = { ...process.env, ...(env ?? {}) } as Record<string, string>;
+  const mergedEnv = buildMinimalEnv(env ?? {});
   try {
     const { stdout } = await execFileAsync(cliPath, args, {
       env: mergedEnv,
@@ -155,6 +169,12 @@ async function runAcurastCli(
     const execErr = err as { message: string; stderr?: string };
     const detail = execErr.stderr ? `\nstderr: ${execErr.stderr}` : '';
     throw new Error(`acurast CLI failed: ${execErr.message}${detail}`);
+  } finally {
+    // Overwrite sensitive values in the env dict — best-effort,
+    // GC may have already collected the strings, but limits window.
+    if (mergedEnv['ACURAST_MNEMONIC']) {
+      mergedEnv['ACURAST_MNEMONIC'] = '\x00'.repeat(mergedEnv['ACURAST_MNEMONIC'].length);
+    }
   }
 }
 

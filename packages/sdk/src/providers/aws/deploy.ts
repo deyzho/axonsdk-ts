@@ -17,10 +17,7 @@ import { ProviderNotImplementedError } from '../../types.js';
 import type { DeploymentConfig, Deployment, CostEstimate } from '../../types.js';
 import { createHmac, createHash } from 'node:crypto';
 import { deflateRawSync } from 'node:zlib';
-
-// ─── Lambda pricing (as of 2024) ────────────────────────────────────────────
-const COST_PER_GB_SEC = 0.0000166667;
-const COST_PER_REQUEST = 0.0000002;
+import { getPricing } from '../../pricing/index.js';
 
 // ─── CRC32 lookup table ──────────────────────────────────────────────────────
 const CRC32_TABLE: Uint32Array = (() => {
@@ -339,8 +336,9 @@ export async function awsEstimate(config: DeploymentConfig): Promise<CostEstimat
   const memorySizeGb = 256 / 1024; // 256 MB default
   const invocations = replicas;
 
-  const computeCost = COST_PER_GB_SEC * memorySizeGb * durationSec * replicas;
-  const requestCost = COST_PER_REQUEST * invocations;
+  const pricing = await getPricing();
+  const computeCost = pricing.awsLambdaGbSec * memorySizeGb * durationSec * replicas;
+  const requestCost = pricing.awsLambdaRequest * invocations;
   const usdEquivalent = computeCost + requestCost;
 
   return {
