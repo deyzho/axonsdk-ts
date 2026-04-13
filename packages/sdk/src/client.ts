@@ -26,6 +26,11 @@ import { FluenceProvider } from './providers/fluence/index.js';
 import { KoiiProvider } from './providers/koii/index.js';
 import { AkashProvider } from './providers/akash/index.js';
 import { IoNetProvider } from './providers/ionet/index.js';
+import { AwsProvider } from './providers/aws/index.js';
+import { GcpProvider } from './providers/gcp/index.js';
+import { AzureProvider } from './providers/azure/index.js';
+import { CloudflareProvider } from './providers/cloudflare/index.js';
+import { FlyioProvider } from './providers/flyio/index.js';
 
 export interface AxonClientOptions {
   /** Provider to use. Defaults to 'acurast'. */
@@ -82,6 +87,16 @@ export class AxonClient {
         return new AkashProvider();
       case 'ionet':
         return new IoNetProvider();
+      case 'aws':
+        return new AwsProvider();
+      case 'gcp':
+        return new GcpProvider();
+      case 'azure':
+        return new AzureProvider();
+      case 'cloudflare':
+        return new CloudflareProvider();
+      case 'flyio':
+        return new FlyioProvider();
       default: {
         // TypeScript exhaustiveness check
         const _exhaustive: never = name;

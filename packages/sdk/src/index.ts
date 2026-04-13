@@ -17,6 +17,11 @@ export { FluenceProvider } from './providers/fluence/index.js';
 export { KoiiProvider } from './providers/koii/index.js';
 export { AkashProvider } from './providers/akash/index.js';
 export { IoNetProvider } from './providers/ionet/index.js';
+export { AwsProvider } from './providers/aws/index.js';
+export { GcpProvider } from './providers/gcp/index.js';
+export { AzureProvider } from './providers/azure/index.js';
+export { CloudflareProvider } from './providers/cloudflare/index.js';
+export { FlyioProvider } from './providers/flyio/index.js';
 
 // Types
 export type {

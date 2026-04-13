@@ -41,6 +41,13 @@ export function generateRuntimeBootstrap(target: RuntimeTarget): string {
     case 'ionet':
       // io.net GPU workers use the same HTTP runtime shim as Akash containers
       return akashRuntimeBootstrap();
+    case 'aws':
+    case 'gcp':
+    case 'azure':
+    case 'cloudflare':
+    case 'flyio':
+      // Cloud providers use a generic HTTP runtime shim
+      return akashRuntimeBootstrap();
     case 'mock':
       return mockRuntimeBootstrap();
     default: {
