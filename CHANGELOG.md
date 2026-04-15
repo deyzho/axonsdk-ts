@@ -7,13 +7,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-## [@axonsdk/sdk@0.2.5] — 2026-04-13
+## [@phonixsdk/sdk@0.2.5] — 2026-04-13
 
 ### Added
 - **Security:** `packages/sdk/src/utils/security.ts` — centralised SSRF prevention utility
   - `assertSafeUrl()` — async validator with DNS rebinding defence; blocks private ranges including `169.254.x` (AWS EC2 IMDS, Azure IMDS, GCP metadata), RFC-1918, loopback, and IPv6 link-local
   - `assertSafeUrlSync()` — synchronous variant for non-async contexts
-- **Security:** `assertSafeUrl` and `assertSafeUrlSync` exported from `@axonsdk/sdk` public API
+- **Security:** `assertSafeUrl` and `assertSafeUrlSync` exported from `@phonixsdk/sdk` public API
 - **Tests:** `aws.test.ts` — AwsProvider: name, estimate, listDeployments, connect error, deploy error paths
 - **Tests:** `gcp.test.ts` — GcpProvider: name, estimate, listDeployments, missing credential errors
 - **Tests:** `azure.test.ts` — AzureProvider: name, estimate, listDeployments, missing credential errors
@@ -39,7 +39,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-## [@axonsdk/inference@0.1.5] — 2026-04-13
+## [@phonixsdk/inference@0.1.5] — 2026-04-13
 
 ### Added
 - **Tests:** `handler.test.ts` — full test suite for `AxonInferenceHandler`:
@@ -50,10 +50,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-## [@axonsdk/sdk@0.2.0] — 2026-04-13
+## [@phonixsdk/sdk@0.2.0] — 2026-04-13
 
 ### Added
-- AWS Lambda provider (`@axonsdk/sdk`) — SigV4 signing, Lambda Function URL
+- AWS Lambda provider (`@phonixsdk/sdk`) — SigV4 signing, Lambda Function URL
 - GCP Cloud Run provider — RS256 JWT service-account auth (no external library), 55-min token cache
 - Azure Container Instances provider — OAuth2 client credentials flow, 55-min token cache
 - Cloudflare Workers provider — esbuild bundle + multipart upload
@@ -66,16 +66,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-## [@axonsdk/sdk@0.1.0] — 2026-04-05
+## [@phonixsdk/sdk@0.1.0] — 2026-04-05
 
 ### Added
 - Initial release of the Axon TypeScript SDK
 - `AxonClient` — single-provider facade
 - `AxonRouter` — multi-provider routing with circuit breaker, health monitor, and scoring strategies
 - Five decentralised compute providers: io.net, Akash, Acurast, Fluence, Koii
-- `@axonsdk/inference` — OpenAI-compatible inference endpoint
-- `@axonsdk/mobile` — React Native / Expo SDK with iOS Keychain / Android Keystore
-- `@axonsdk/cli` — `axon init`, `axon auth`, `axon deploy`, `axon run-local`, `axon status`, `axon send`
+- `@phonixsdk/inference` — OpenAI-compatible inference endpoint
+- `@phonixsdk/mobile` — React Native / Expo SDK with iOS Keychain / Android Keystore
+- `@phonixsdk/cli` — `axon init`, `axon auth`, `axon deploy`, `axon run-local`, `axon status`, `axon send`
 - Status dashboard (`status/`)
 - Deployment templates: inference, oracle
 - Example app: Next.js integration
@@ -83,7 +83,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[@axonsdk/sdk@0.2.5]: https://github.com/deyzho/phonixsdk/compare/sdk-v0.2.0...sdk-v0.2.5
-[@axonsdk/inference@0.1.5]: https://github.com/deyzho/phonixsdk/compare/inference-v0.1.0...inference-v0.1.5
-[@axonsdk/sdk@0.2.0]: https://github.com/deyzho/phonixsdk/compare/sdk-v0.1.0...sdk-v0.2.0
-[@axonsdk/sdk@0.1.0]: https://github.com/deyzho/phonixsdk/releases/tag/sdk-v0.1.0
+[@phonixsdk/sdk@0.2.5]: https://github.com/deyzho/phonixsdk/compare/sdk-v0.2.0...sdk-v0.2.5
+[@phonixsdk/inference@0.1.5]: https://github.com/deyzho/phonixsdk/compare/inference-v0.1.0...inference-v0.1.5
+[@phonixsdk/sdk@0.2.0]: https://github.com/deyzho/phonixsdk/compare/sdk-v0.1.0...sdk-v0.2.0
+[@phonixsdk/sdk@0.1.0]: https://github.com/deyzho/phonixsdk/releases/tag/sdk-v0.1.0

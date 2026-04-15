@@ -4,9 +4,9 @@
  * Prints a table of deployments with ID, status, processor pubkeys, and URL.
  */
 
-import { loadConfig, AxonClient } from '@axonsdk/sdk';
+import { loadConfig, AxonClient } from '@phonixsdk/sdk';
 import { config as loadDotenv } from '../utils/env.js';
-import type { Deployment } from '@axonsdk/sdk';
+import type { Deployment } from '@phonixsdk/sdk';
 
 async function getChalk() {
   const mod = await import('chalk');

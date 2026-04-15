@@ -51,7 +51,7 @@ The Axon SDK implements the following security controls:
 ## Scope
 
 In scope:
-- All packages in this repository (`@axonsdk/sdk`, `@axonsdk/cli`, `@axonsdk/inference`, `@axonsdk/mobile`)
+- All packages in this repository (`@phonixsdk/sdk`, `@phonixsdk/cli`, `@phonixsdk/inference`, `@phonixsdk/mobile`)
 - The provider integration layer and routing engine
 - Authentication and credential management
 

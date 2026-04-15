@@ -12,8 +12,8 @@
 import { writeFile, copyFile, mkdir, access } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { createRequire } from 'node:module';
-import { generateConfig, generateP256KeyPair } from '@axonsdk/sdk';
-import type { ProviderName, RuntimeType } from '@axonsdk/sdk';
+import { generateConfig, generateP256KeyPair } from '@phonixsdk/sdk';
+import type { ProviderName, RuntimeType } from '@phonixsdk/sdk';
 
 // ─── Lazy imports for ESM-only packages ──────────────────────────────────────
 
@@ -63,8 +63,8 @@ function resolveTemplatePath(templateName: TemplateName): string {
   // Try to find the templates directory relative to the CLI package
   const requireFromHere = createRequire(import.meta.url);
   try {
-    // When installed as a package, templates are at @axonsdk/cli/../../../templates
-    const cliPkg = requireFromHere.resolve('@axonsdk/cli/package.json');
+    // When installed as a package, templates are at @phonixsdk/cli/../../../templates
+    const cliPkg = requireFromHere.resolve('@phonixsdk/cli/package.json');
     const cliRoot = dirname(cliPkg);
     return join(cliRoot, '..', '..', 'templates', templateName);
   } catch {

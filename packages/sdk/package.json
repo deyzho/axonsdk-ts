@@ -1,5 +1,5 @@
 {
-  "name": "@axonsdk/sdk",
+  "name": "@phonixsdk/sdk",
   "version": "0.2.5",
   "description": "Provider-abstracted SDK for routing AI inference across edge and cloud compute — io.net, Akash, Acurast, Fluence, Koii, AWS, GCP, Azure, Cloudflare, and Fly.io.",
   "type": "module",

@@ -1,5 +1,5 @@
 {
-  "name": "@axonsdk/inference",
+  "name": "@phonixsdk/inference",
   "version": "0.1.5",
   "description": "OpenAI-compatible inference endpoint that automatically routes requests to the fastest, cheapest available compute backend.",
   "type": "module",

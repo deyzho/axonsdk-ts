@@ -4,9 +4,9 @@ import { resolve } from 'node:path';
 export default defineConfig({
   resolve: {
     alias: [
-      // Resolve @axonsdk/sdk to TypeScript source during tests (no build needed)
+      // Resolve @phonixsdk/sdk to TypeScript source during tests (no build needed)
       {
-        find: '@axonsdk/sdk',
+        find: '@phonixsdk/sdk',
         replacement: resolve(__dirname, '../sdk/src/index.ts'),
       },
       // Intercept all relative .js imports and redirect to .ts source equivalents.

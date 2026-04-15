@@ -1,5 +1,5 @@
 {
-  "name": "@axonsdk/mobile",
+  "name": "@phonixsdk/mobile",
   "version": "0.2.5",
   "description": "React Native / Expo SDK for calling AI inference endpoints from iOS and Android apps — with automatic routing, failover, and secure key storage.",
   "private": false,
@@ -50,7 +50,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@axonsdk/sdk": "*"
+    "@phonixsdk/sdk": "*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

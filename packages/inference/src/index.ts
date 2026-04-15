@@ -1,5 +1,5 @@
 /**
- * @axonsdk/inference — OpenAI-compatible inference endpoint handler.
+ * @phonixsdk/inference — OpenAI-compatible inference endpoint handler.
  *
  * Drop-in replacement for the OpenAI API that routes requests through
  * Axon's decentralised compute network (io.net, Akash, Acurast).

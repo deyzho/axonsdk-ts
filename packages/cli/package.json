@@ -1,5 +1,5 @@
 {
-  "name": "@axonsdk/cli",
+  "name": "@phonixsdk/cli",
   "version": "0.1.5",
   "description": "Command-line tool for deploying and managing AI workloads across edge and cloud compute providers.",
   "type": "module",
@@ -46,7 +46,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@axonsdk/sdk": "^0.2.0",
+    "@phonixsdk/sdk": "^0.2.0",
     "chalk": "^5.0.0",
     "commander": "^12.0.0",
     "inquirer": "^8.2.6",

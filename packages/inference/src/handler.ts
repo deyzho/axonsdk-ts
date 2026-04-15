@@ -10,7 +10,7 @@
  *
  * Example (Next.js App Router):
  *   // app/api/v1/chat/completions/route.ts
- *   import { AxonInferenceHandler } from '@axonsdk/inference';
+ *   import { AxonInferenceHandler } from '@phonixsdk/inference';
  *   const handler = new AxonInferenceHandler({ apiKey: process.env.AXON_SECRET_KEY, ... });
  *   export const POST = (req: Request) => handler.handleRequest(req);
  */
