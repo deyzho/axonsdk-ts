@@ -40,9 +40,9 @@
     "tee",
     "depin"
   ],
-  "author": "Axon <hello@axonsdk.dev>",
+  "author": "Axon <hello@phonixsdk.dev>",
   "license": "Apache-2.0",
-  "homepage": "https://axonsdk.dev",
+  "homepage": "https://phonixsdk.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/deyzho/phonixsdk.git",

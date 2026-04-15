@@ -10,7 +10,7 @@
  *
  *   // After — routes to cheapest/fastest decentralised compute
  *   const openai = new OpenAI({
- *     baseURL: 'https://api.axonsdk.dev/v1',
+ *     baseURL: 'https://api.phonixsdk.dev/v1',
  *     apiKey: process.env.AXON_SECRET_KEY,
  *   });
  *
