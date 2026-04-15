@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AwsProvider } from '../providers/aws/index.js';
+import { AwsProvider } from '../providers/aws/index.ts';
 
 describe('AwsProvider', () => {
   it('should have name "aws"', () => {

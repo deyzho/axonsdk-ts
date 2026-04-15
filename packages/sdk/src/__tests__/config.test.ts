@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadConfig, generateConfig, generateEnv } from '../config.js';
-import { ConfigValidationError } from '../types.js';
+import { loadConfig, generateConfig, generateEnv } from '../config.ts';
+import { ConfigValidationError } from '../types.ts';
 
 describe('generateConfig', () => {
   it('should produce valid JSON', () => {

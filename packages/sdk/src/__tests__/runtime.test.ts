@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateRuntimeBootstrap } from '../runtime/index.js';
+import { generateRuntimeBootstrap } from '../runtime/index.ts';
 
 describe('generateRuntimeBootstrap', () => {
   it('should return a string for each provider target', () => {

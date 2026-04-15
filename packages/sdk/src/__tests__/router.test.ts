@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { CircuitBreaker } from '../router/circuit-breaker.js';
-import { ProviderHealthMonitor } from '../router/health-monitor.js';
-import { ProcessorSelector } from '../router/processor-selector.js';
-import { score } from '../router/strategy.js';
-import { AxonRouter } from '../router/index.js';
-import type { RouterConfig } from '../router/types.js';
+import { CircuitBreaker } from '../router/circuit-breaker.ts';
+import { ProviderHealthMonitor } from '../router/health-monitor.ts';
+import { ProcessorSelector } from '../router/processor-selector.ts';
+import { score } from '../router/strategy.ts';
+import { AxonRouter } from '../router/index.ts';
+import type { RouterConfig } from '../router/types.ts';
 
 // ─── CircuitBreaker ───────────────────────────────────────────────────────────
 

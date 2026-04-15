@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { KoiiProvider } from '../providers/koii/index.js';
-import { AxonError } from '../types.js';
+import { KoiiProvider } from '../providers/koii/index.ts';
+import { AxonError } from '../types.ts';
 
 describe('KoiiProvider construction', () => {
   it('should have name "koii"', () => {

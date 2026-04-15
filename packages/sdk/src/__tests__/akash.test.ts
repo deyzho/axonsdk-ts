@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { AkashProvider } from '../providers/akash/index.js';
-import { AkashMessagingClient } from '../providers/akash/client.js';
-import { generateAkashSdl } from '../providers/akash/deploy.js';
-import { AxonError } from '../types.js';
+import { AkashProvider } from '../providers/akash/index.ts';
+import { AkashMessagingClient } from '../providers/akash/client.ts';
+import { generateAkashSdl } from '../providers/akash/deploy.ts';
+import { AxonError } from '../types.ts';
 
 // ─── AkashProvider ────────────────────────────────────────────────────────────
 

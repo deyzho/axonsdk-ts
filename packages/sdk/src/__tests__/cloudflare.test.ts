@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { CloudflareProvider } from '../providers/cloudflare/index.js';
+import { CloudflareProvider } from '../providers/cloudflare/index.ts';
 
 describe('CloudflareProvider', () => {
   afterEach(() => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AzureProvider } from '../providers/azure/index.js';
-import { clearAzureTokenCache } from '../providers/azure/auth.js';
+import { AzureProvider } from '../providers/azure/index.ts';
+import { clearAzureTokenCache } from '../providers/azure/auth.ts';
 
 describe('AzureProvider', () => {
   beforeEach(() => {

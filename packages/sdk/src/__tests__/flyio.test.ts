@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { FlyioProvider } from '../providers/flyio/index.js';
+import { FlyioProvider } from '../providers/flyio/index.ts';
 
 describe('FlyioProvider', () => {
   afterEach(() => {

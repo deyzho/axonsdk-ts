@@ -3,7 +3,7 @@ import {
   AxonError,
   ProviderNotImplementedError,
   ConfigValidationError,
-} from '../types.js';
+} from '../types.ts';
 
 describe('AxonError', () => {
   it('should be an instance of Error', () => {

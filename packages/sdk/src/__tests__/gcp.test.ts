@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { GcpProvider } from '../providers/gcp/index.js';
-import { clearGcpTokenCache } from '../providers/gcp/auth.js';
+import { GcpProvider } from '../providers/gcp/index.ts';
+import { clearGcpTokenCache } from '../providers/gcp/auth.ts';
 
 describe('GcpProvider', () => {
   beforeEach(() => {

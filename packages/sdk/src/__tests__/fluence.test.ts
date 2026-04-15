@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { FluenceProvider } from '../providers/fluence/index.js';
-import { AxonError } from '../types.js';
+import { FluenceProvider } from '../providers/fluence/index.ts';
+import { AxonError } from '../types.ts';
 
 describe('FluenceProvider construction', () => {
   it('should have name "fluence"', () => {

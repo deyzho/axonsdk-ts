@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { AxonClient } from '../client.js';
-import { AxonError } from '../types.js';
-import { AcurastProvider } from '../providers/acurast/index.js';
-import { FluenceProvider } from '../providers/fluence/index.js';
-import { KoiiProvider } from '../providers/koii/index.js';
-import { AkashProvider } from '../providers/akash/index.js';
+import { AxonClient } from '../client.ts';
+import { AxonError } from '../types.ts';
+import { AcurastProvider } from '../providers/acurast/index.ts';
+import { FluenceProvider } from '../providers/fluence/index.ts';
+import { KoiiProvider } from '../providers/koii/index.ts';
+import { AkashProvider } from '../providers/akash/index.ts';
 
 describe('AxonClient constructor', () => {
   it('should default to the acurast provider', () => {
