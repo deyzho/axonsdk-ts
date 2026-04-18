@@ -17,6 +17,7 @@
 
 import { AxonInferenceRouter } from './router.js';
 import type { AxonInferenceConfig, InferenceRequest, InferenceResponse, ModelInfo } from './types.js';
+import { assertSafeUrl } from '../../sdk/src/utils/security.js';
 
 const RATE_LIMIT_RPM = 60;
 
@@ -102,6 +103,9 @@ export class AxonInferenceHandler {
     const t0 = Date.now();
 
     try {
+      // Validate the endpoint URL before making any outbound request (defence-in-depth).
+      await assertSafeUrl(route.endpoint, route.provider, 'inference endpoint');
+
       // Forward to the selected provider's inference endpoint
       const providerRes = await fetch(`${route.endpoint}/v1/chat/completions`, {
         method: 'POST',

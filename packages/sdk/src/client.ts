@@ -234,9 +234,10 @@ export class AxonClient {
    *
    * @param options.model  — Model identifier (passed to processor; ignored in echo mode)
    * @param options.prompt — The prompt text to send
+   * @param options.code   — Path to the inference handler entry point (e.g. './dist/inference-handler.js')
    * @returns A promise that resolves to the inference result string
    */
-  async inference(options: { model?: string; prompt: string }): Promise<string> {
+  async inference(options: { model?: string; prompt: string; code: string }): Promise<string> {
     if (!this.connected) {
       throw new AxonError('Call connect() before using inference()');
     }
@@ -244,7 +245,7 @@ export class AxonClient {
     // Deploy the inference template
     const deployment = await this.deploy({
       runtime: 'nodejs',
-      code: 'src/index.ts',
+      code: options.code,
       schedule: { type: 'on-demand', durationMs: 3_600_000 },
       replicas: 1,
     });

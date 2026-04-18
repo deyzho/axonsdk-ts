@@ -16,6 +16,7 @@ interface ProviderRoute {
   endpoint: string;
   available: boolean;
   emaLatency: number;
+  recoveryTimer?: ReturnType<typeof setTimeout>;
 }
 
 const EMA_α = 0.2;
@@ -67,10 +68,20 @@ export class AxonInferenceRouter {
 
   markUnavailable(provider: InferenceProvider): void {
     const route = this.routes.find(r => r.provider === provider);
-    if (route) route.available = false;
+    if (!route) return;
+    route.available = false;
+    // Cancel any in-flight recovery timer before scheduling a new one,
+    // preventing timer accumulation under rapid failures.
+    if (typeof clearTimeout !== 'undefined' && route.recoveryTimer !== undefined) {
+      clearTimeout(route.recoveryTimer);
+      route.recoveryTimer = undefined;
+    }
     // Auto-recover after 30s (guarded for edge runtimes where setTimeout may be unavailable)
     if (typeof setTimeout !== 'undefined') {
-      setTimeout(() => { if (route) route.available = true; }, 30_000);
+      route.recoveryTimer = setTimeout(() => {
+        route.available = true;
+        route.recoveryTimer = undefined;
+      }, 30_000);
     }
   }
 
