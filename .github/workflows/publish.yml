@@ -108,9 +108,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Build Mobile
+      - name: Typecheck Mobile
         working-directory: packages/mobile
-        run: npm run build
+        run: npm run typecheck
 
       - name: Publish @phonixsdk/mobile
         working-directory: packages/mobile

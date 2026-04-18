@@ -18,11 +18,14 @@
 import { AxonInferenceRouter } from './router.js';
 import type { AxonInferenceConfig, InferenceRequest, InferenceResponse, ModelInfo } from './types.js';
 
+const _rateLimitStore = new Map<string, number[]>();
+const RATE_LIMIT_RPM = 60;
+
 const SUPPORTED_MODELS: ModelInfo[] = [
-  { id: 'axon-llama-3-70b',      object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'ionet' },
-  { id: 'axon-mistral-7b',       object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'ionet' },
-  { id: 'axon-llama-3-8b',       object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'akash' },
-  { id: 'axon-tee-phi-3-mini',   object: 'model', created: 1700000000, owned_by: 'axonsdk', provider: 'acurast' },
+  { id: 'axon-llama-3-70b',      object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'ionet' },
+  { id: 'axon-mistral-7b',       object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'ionet' },
+  { id: 'axon-llama-3-8b',       object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'akash' },
+  { id: 'axon-tee-phi-3-mini',   object: 'model', created: 1700000000, owned_by: 'phonixsdk', provider: 'acurast' },
 ];
 
 export class AxonInferenceHandler {
@@ -43,6 +46,11 @@ export class AxonInferenceHandler {
     const auth = req.headers.get('Authorization') ?? '';
     if (!auth.startsWith('Bearer ') || auth.slice(7) !== this.apiKey) {
       return this.jsonError(401, 'invalid_api_key', 'Invalid API key.');
+    }
+
+    const rateLimitKey = req.headers.get('Authorization') ?? 'anonymous';
+    if (!this.checkRateLimit(rateLimitKey)) {
+      return this.jsonError(429, 'rate_limit_exceeded', 'Rate limit exceeded. Max 60 requests per minute.');
     }
 
     const url = new URL(req.url);
@@ -146,6 +154,16 @@ export class AxonInferenceHandler {
       object: 'list',
       data: SUPPORTED_MODELS,
     }), { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  private checkRateLimit(key: string): boolean {
+    const now = Date.now();
+    const windowStart = now - 60_000;
+    const timestamps = (_rateLimitStore.get(key) ?? []).filter(t => t > windowStart);
+    if (timestamps.length >= RATE_LIMIT_RPM) return false;
+    timestamps.push(now);
+    _rateLimitStore.set(key, timestamps);
+    return true;
   }
 
   private jsonError(status: number, code: string, message: string): Response {

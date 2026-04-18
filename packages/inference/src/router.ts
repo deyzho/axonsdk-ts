@@ -68,8 +68,10 @@ export class AxonInferenceRouter {
   markUnavailable(provider: InferenceProvider): void {
     const route = this.routes.find(r => r.provider === provider);
     if (route) route.available = false;
-    // Auto-recover after 30s
-    setTimeout(() => { if (route) route.available = true; }, 30_000);
+    // Auto-recover after 30s (guarded for edge runtimes where setTimeout may be unavailable)
+    if (typeof setTimeout !== 'undefined') {
+      setTimeout(() => { if (route) route.available = true; }, 30_000);
+    }
   }
 
   get configured(): InferenceProvider[] {
