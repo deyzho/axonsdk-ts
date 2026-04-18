@@ -14,7 +14,10 @@ import { ConfigValidationError } from './types.js';
 
 // ─── Validation helpers ──────────────────────────────────────────────────────
 
-const VALID_PROVIDERS: ProviderName[] = ['acurast', 'fluence', 'koii', 'akash'];
+const VALID_PROVIDERS: ProviderName[] = [
+  'acurast', 'fluence', 'koii', 'akash', 'ionet',
+  'aws', 'gcp', 'azure', 'cloudflare', 'flyio',
+];
 const VALID_RUNTIMES: RuntimeType[] = ['nodejs', 'python', 'docker', 'wasm'];
 const VALID_SCHEDULE_TYPES = ['onetime', 'interval', 'on-demand'] as const;
 

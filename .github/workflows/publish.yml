@@ -88,7 +88,7 @@ jobs:
         working-directory: packages/sdk
         run: npm run build
 
-      - name: Publish @axonsdk/sdk
+      - name: Publish @phonixsdk/sdk
         working-directory: packages/sdk
         run: npm publish --access public
         env:
@@ -98,13 +98,13 @@ jobs:
         working-directory: packages/inference
         run: npm run build
 
-      - name: Publish @axonsdk/inference
+      - name: Publish @phonixsdk/inference
         working-directory: packages/inference
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @axonsdk/mobile
+      - name: Publish @phonixsdk/mobile
         working-directory: packages/mobile
         run: npm publish --access public
         env:
@@ -118,7 +118,7 @@ jobs:
         working-directory: packages/cli
         run: npm run build
 
-      - name: Publish @axonsdk/cli
+      - name: Publish @phonixsdk/cli
         working-directory: packages/cli
         run: npm publish --access public
         env:

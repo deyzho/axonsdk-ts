@@ -112,6 +112,22 @@ describe('loadConfig', () => {
     await expect(loadConfig(tmpDir)).rejects.toBeInstanceOf(ConfigValidationError);
   });
 
+  it.each([
+    'acurast', 'fluence', 'koii', 'akash', 'ionet',
+    'aws', 'gcp', 'azure', 'cloudflare', 'flyio',
+  ])('should accept "%s" as a valid provider', async (provider) => {
+    const config = {
+      projectName: 'test',
+      provider,
+      runtime: 'nodejs',
+      entryFile: 'src/index.ts',
+      schedule: { type: 'on-demand' },
+    };
+    await writeFile(join(tmpDir, 'axon.json'), JSON.stringify(config));
+    const loaded = await loadConfig(tmpDir);
+    expect(loaded.provider).toBe(provider);
+  });
+
   it('should throw ConfigValidationError for invalid runtime', async () => {
     const config = {
       projectName: 'test',
