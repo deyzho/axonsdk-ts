@@ -63,7 +63,7 @@ export function mockRuntimeBootstrap(): string {
           path: urlObj.pathname + urlObj.search,
           method: method.toUpperCase(),
           headers: Object.assign(
-            { 'User-Agent': 'phonix-run-local/0.1', 'Host': urlObj.hostname },
+            { 'User-Agent': 'axon-run-local/0.1', 'Host': urlObj.hostname },
             headers || {}
           ),
         };

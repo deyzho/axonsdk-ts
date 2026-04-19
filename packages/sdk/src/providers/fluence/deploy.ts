@@ -188,7 +188,7 @@ export async function fluenceDeploy(options: FluenceDeployOptions): Promise<Depl
   }
 
   // Write to temp dir as a spell JS file
-  const tmpDir = await mkdtemp(join(tmpdir(), 'phonix-fluence-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'axon-fluence-'));
   const spellPath = join(tmpDir, 'spell.js');
   await writeFile(spellPath, bundledCode, 'utf8');
 

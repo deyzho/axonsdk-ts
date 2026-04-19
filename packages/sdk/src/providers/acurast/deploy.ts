@@ -272,7 +272,7 @@ export async function acurastDeploy(options: AcurastDeployOptions): Promise<Depl
   }
 
   // 2. Write bundle to a temp directory
-  const tmpDir = await mkdtemp(join(tmpdir(), 'phonix-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'axon-'));
   const bundlePath = join(tmpDir, 'bundle.js');
   await writeFile(bundlePath, bundledCode, 'utf8');
 
