@@ -411,10 +411,10 @@ This repository contains the **TypeScript / Node.js** packages. If you're buildi
 
 | Package | Description |
 |---|---|
-| [`axon-py`](https://github.com/deyzho/axon) | Python SDK — same providers, FastAPI inference server, cloud provider support |
+| [`axonsdk-py`](https://github.com/deyzho/axon) | Python SDK — same providers, FastAPI inference server, cloud provider support |
 
 ```bash
-pip install axon-py
+pip install axonsdk-py
 ```
 
 **[axonsdk.dev](https://axonsdk.dev)** — full documentation for the Python SDK.
