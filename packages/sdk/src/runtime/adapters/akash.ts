@@ -43,7 +43,7 @@ export function akashRuntimeBootstrap(): string {
           var out = typeof payload === 'string' ? payload : JSON.stringify(payload);
           res.writeHead(200, {
             'Content-Type': 'application/json',
-            'X-Phonix-Provider': 'akash',
+            'X-AxonSDK-Provider': 'akash',
           });
           res.end(out);
           _pendingRespond = null;
