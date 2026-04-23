@@ -1,4 +1,4 @@
-# Axon SDK
+# AxonSDK
 
 [![CI](https://github.com/deyzho/axon-ts/actions/workflows/publish.yml/badge.svg)](https://github.com/deyzho/axon-ts/actions/workflows/publish.yml)
 [![npm](https://img.shields.io/npm/v/@axonsdk/sdk)](https://www.npmjs.com/package/@axonsdk/sdk)
@@ -9,11 +9,11 @@
 
 **One SDK. Any compute. Route AI inference to the fastest, cheapest backend — cloud, edge, or your own infrastructure.**
 
-Axon is a universal AI compute routing layer. Stop rewriting integrations every time you switch providers, hit rate limits, or find a cheaper GPU. Point Axon at any backend — GPU clusters, container clouds, serverless functions, TEE enclaves, or your own servers — and it handles routing, failover, and cost optimisation automatically.
+AxonSDK is a universal AI compute routing layer. Stop rewriting integrations every time you switch providers, hit rate limits, or find a cheaper GPU. Point AxonSDK at any backend — GPU clusters, container clouds, serverless functions, TEE enclaves, or your own servers — and it handles routing, failover, and cost optimisation automatically.
 
 Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing code routes to a new backend in two lines. Call your deployed processors from **iOS and Android** with `@axonsdk/mobile`.
 
-> Axon is to AI compute what httpx is to HTTP — **one client, any backend**.
+> AxonSDK is to AI compute what httpx is to HTTP — **one client, any backend**.
 
 ---
 
@@ -181,7 +181,7 @@ client.disconnect();
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'http://localhost:8000/v1', // your Axon inference handler URL
+  baseURL: 'http://localhost:8000/v1', // your AxonSDK inference handler URL
   apiKey:  process.env.AXON_SECRET_KEY,
 });
 
@@ -223,7 +223,7 @@ export const POST = (req: Request) => handler.handleRequest(req);
 export const GET  = (req: Request) => handler.handleRequest(req); // GET /v1/models
 ```
 
-The handler implements streaming (SSE) and non-streaming, bearer auth, automatic failover with 30-second recovery, and an `X-Axon-Provider` response header so you can see which backend served each request.
+The handler implements streaming (SSE) and non-streaming, bearer auth, automatic failover with 30-second recovery, and an `X-AxonSDK-Provider` response header so you can see which backend served each request.
 
 ---
 
@@ -429,4 +429,4 @@ Apache-2.0 — see [LICENSE](./LICENSE).
 
 **[axonsdk.dev](https://axonsdk.dev)** · deyzho@me.com · Apache-2.0
 
-*Axon is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.*
+*AxonSDK is not affiliated with io.net, Akash Network, Acurast, Fluence, or Koii. Provider names and trademarks belong to their respective owners.*

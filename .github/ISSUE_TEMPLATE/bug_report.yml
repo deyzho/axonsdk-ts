@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a bug in an @axonsdk/* package
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. A clear repro makes fixes land faster.
+
+        For security issues, do **not** open an issue — follow the process in [SECURITY.md](../SECURITY.md).
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package are you using?
+      options:
+        - "@axonsdk/sdk"
+        - "@axonsdk/cli"
+        - "@axonsdk/inference"
+        - "@axonsdk/mobile"
+        - "Multiple"
+        - "Not sure"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      description: Output of `npm ls <package>` for the affected package.
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime
+      description: Node.js version, or mobile platform (iOS/Android + RN/Expo version).
+      placeholder: "Node.js 20.15.0"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal steps or code snippet that reproduces the issue.
+      placeholder: |
+        1. `npm install @axonsdk/sdk@0.3.0`
+        2. Run the following snippet:
+           ```ts
+           ...
+           ```
+        3. Observe error: ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include stack traces, error messages, and anything from `DEBUG=axon:*` logs if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Provider in use, deployment target, or anything else that might matter.

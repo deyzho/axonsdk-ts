@@ -25,7 +25,7 @@
     "multi-provider",
     "depin"
   ],
-  "author": "Axon <deyzho@me.com>",
+  "author": "AxonSDK <deyzho@me.com>",
   "license": "Apache-2.0",
   "homepage": "https://axonsdk.dev",
   "repository": {
