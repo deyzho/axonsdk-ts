@@ -38,11 +38,11 @@
   "homepage": "https://axonsdk.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/axon-ts.git",
+    "url": "https://github.com/deyzho/axonsdk-ts.git",
     "directory": "packages/mobile"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/axon-ts/issues"
+    "url": "https://github.com/deyzho/axonsdk-ts/issues"
   },
   "files": [
     "dist",

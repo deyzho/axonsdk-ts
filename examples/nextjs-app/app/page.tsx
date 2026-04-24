@@ -311,7 +311,7 @@ export default function AxonDemoPage() {
         <br />
         <br />
         <a
-          href="https://github.com/deyzho/axon-ts"
+          href="https://github.com/deyzho/axonsdk-ts"
           style={{ color: '#6366f1', textDecoration: 'none' }}
           target="_blank"
           rel="noopener noreferrer"

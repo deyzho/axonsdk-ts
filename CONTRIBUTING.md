@@ -8,8 +8,8 @@ Thank you for your interest in contributing! AxonSDK is an open-source project a
 
 ```bash
 # Fork the repo on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/axon-ts.git
-cd axon-ts
+git clone https://github.com/YOUR_USERNAME/axonsdk-ts.git
+cd axonsdk-ts
 
 # Install dependencies
 npm install

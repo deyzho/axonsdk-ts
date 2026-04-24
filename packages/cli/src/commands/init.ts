@@ -306,7 +306,7 @@ export async function runInit(cwd: string = process.cwd()): Promise<void> {
     console.log();
     console.log(
       chalk.gray(
-        `  Docs: https://github.com/deyzho/axon-ts#readme`
+        `  Docs: https://github.com/deyzho/axonsdk-ts#readme`
       )
     );
     console.log();

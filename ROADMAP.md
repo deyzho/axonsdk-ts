@@ -1,6 +1,6 @@
 # AxonSDK Roadmap
 
-Priorities may shift based on community feedback and provider availability. This roadmap reflects the TypeScript monorepo ([`deyzho/axon-ts`](https://github.com/deyzho/axon-ts)). The Python SDK ([`deyzho/axon`](https://github.com/deyzho/axon)) has its own companion roadmap.
+Priorities may shift based on community feedback and provider availability. This roadmap reflects the TypeScript monorepo ([`deyzho/axonsdk-ts`](https://github.com/deyzho/axonsdk-ts)). The Python SDK ([`deyzho/axonsdk`](https://github.com/deyzho/axonsdk)) has its own companion roadmap.
 
 Dates are targets, not commitments. Each release will ship when its acceptance criteria are met.
 

@@ -67,7 +67,7 @@ Anyone already running a bundle deployed via the `acurast`, `akash`, `fluence`, 
 - **CI:** Added Node.js 22 to test matrix (now tests on 20 and 22)
 - **CI:** Added `tsc --noEmit` type-check step before build in CI
 - **CI:** Added SBOM generation (`anchore/sbom-action`, SPDX format)
-- **Repository URLs:** All four `package.json` files corrected from `deyzho/axonsdk` to `deyzho/axon-ts`
+- **Repository URLs:** All four `package.json` files corrected from `deyzho/axonsdk` to `deyzho/axonsdk-ts`
 
 ### Fixed
 - Removed dev-only scripts from repo: `clean-phonix.ps1`, `commit-msg.txt`, `fix-rename.ps1`
@@ -118,7 +118,7 @@ Anyone already running a bundle deployed via the `acurast`, `akash`, `fluence`, 
 
 ---
 
-[@axonsdk/sdk@0.2.5]: https://github.com/deyzho/axon-ts/compare/sdk-v0.2.0...sdk-v0.2.5
-[@axonsdk/inference@0.1.5]: https://github.com/deyzho/axon-ts/compare/inference-v0.1.0...inference-v0.1.5
-[@axonsdk/sdk@0.2.0]: https://github.com/deyzho/axon-ts/compare/sdk-v0.1.0...sdk-v0.2.0
-[@axonsdk/sdk@0.1.0]: https://github.com/deyzho/axon-ts/releases/tag/sdk-v0.1.0
+[@axonsdk/sdk@0.2.5]: https://github.com/deyzho/axonsdk-ts/compare/sdk-v0.2.0...sdk-v0.2.5
+[@axonsdk/inference@0.1.5]: https://github.com/deyzho/axonsdk-ts/compare/inference-v0.1.0...inference-v0.1.5
+[@axonsdk/sdk@0.2.0]: https://github.com/deyzho/axonsdk-ts/compare/sdk-v0.1.0...sdk-v0.2.0
+[@axonsdk/sdk@0.1.0]: https://github.com/deyzho/axonsdk-ts/releases/tag/sdk-v0.1.0

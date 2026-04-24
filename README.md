@@ -1,11 +1,11 @@
 # AxonSDK
 
-[![CI](https://github.com/deyzho/axon-ts/actions/workflows/publish.yml/badge.svg)](https://github.com/deyzho/axon-ts/actions/workflows/publish.yml)
+[![CI](https://github.com/deyzho/axonsdk-ts/actions/workflows/publish.yml/badge.svg)](https://github.com/deyzho/axonsdk-ts/actions/workflows/publish.yml)
 [![npm](https://img.shields.io/npm/v/@axonsdk/sdk)](https://www.npmjs.com/package/@axonsdk/sdk)
 [![Node](https://img.shields.io/node/v/@axonsdk/sdk)](https://nodejs.org)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-**[axonsdk.dev](https://axonsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [Roadmap](./ROADMAP.md) · [GitHub](https://github.com/deyzho/axon-ts)**
+**[axonsdk.dev](https://axonsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [Roadmap](./ROADMAP.md) · [GitHub](https://github.com/deyzho/axonsdk-ts)**
 
 **One SDK. Any compute. Route AI inference to the fastest, cheapest backend — cloud, edge, or your own infrastructure.**
 
@@ -385,8 +385,8 @@ axon/
 ## Development
 
 ```bash
-git clone https://github.com/deyzho/axon-ts.git
-cd axon-ts
+git clone https://github.com/deyzho/axonsdk-ts.git
+cd axonsdk-ts
 npm install
 npm run build
 npm test
@@ -411,7 +411,7 @@ This repository contains the **TypeScript / Node.js** packages. If you're buildi
 
 | Package | Description |
 |---|---|
-| [`axonsdk-py`](https://github.com/deyzho/axon) | Python SDK — same providers, FastAPI inference server, cloud provider support |
+| [`axonsdk-py`](https://github.com/deyzho/axonsdk) | Python SDK — same providers, FastAPI inference server, cloud provider support |
 
 ```bash
 pip install axonsdk-py

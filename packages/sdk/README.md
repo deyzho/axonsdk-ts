@@ -97,7 +97,7 @@ axon deploy
 
 ## Documentation
 
-Full documentation at [axonsdk.dev](https://axonsdk.dev) and the [GitHub repository](https://github.com/deyzho/axon-ts).
+Full documentation at [axonsdk.dev](https://axonsdk.dev) and the [GitHub repository](https://github.com/deyzho/axonsdk-ts).
 
 ## License
 
