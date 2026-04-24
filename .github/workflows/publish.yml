@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Audit production dependencies (critical only)
+        run: npm audit --production --audit-level=critical
+
       - name: Type check (SDK)
         working-directory: packages/sdk
         run: npx tsc --noEmit
@@ -45,6 +48,10 @@ jobs:
 
       - name: Run mobile tests
         working-directory: packages/mobile
+        run: npm test
+
+      - name: Run CLI tests
+        working-directory: packages/cli
         run: npm test
 
   sbom:
@@ -73,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout
@@ -94,7 +102,7 @@ jobs:
 
       - name: Publish @axonsdk/sdk
         working-directory: packages/sdk
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -104,7 +112,7 @@ jobs:
 
       - name: Publish @axonsdk/inference
         working-directory: packages/inference
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -112,9 +120,13 @@ jobs:
         working-directory: packages/mobile
         run: npm run typecheck
 
+      - name: Build Mobile
+        working-directory: packages/mobile
+        run: npm run build
+
       - name: Publish @axonsdk/mobile
         working-directory: packages/mobile
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -128,7 +140,7 @@ jobs:
 
       - name: Publish @axonsdk/cli
         working-directory: packages/cli
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

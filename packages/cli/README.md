@@ -58,7 +58,7 @@ axon send <deployment-id> '{"prompt":"Hello"}'
 
 ## Documentation
 
-Full docs at [axonsdk.dev](https://axonsdk.dev) · [GitHub](https://github.com/deyzho/axon-ts)
+Full docs at [axonsdk.dev](https://axonsdk.dev) · [GitHub](https://github.com/deyzho/axonsdk-ts)
 
 ## License
 

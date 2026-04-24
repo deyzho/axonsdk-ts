@@ -1,9 +1,26 @@
 # Changelog
 
-All notable changes to the Axon SDK (TypeScript monorepo) are documented here.
+All notable changes to the AxonSDK (TypeScript monorepo) are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [@axonsdk/mobile@0.2.7] — 2026-04-22
+
+### Changed
+- **Packaging:** rebuilt to ship compiled JavaScript + TypeScript declarations under `dist/` instead of raw TypeScript sources. Consumers now get pre-compiled `./dist/index.js` and `./dist/index.d.ts`; the old `./src/index.ts` entry points are removed. Metro/Expo, Vite, and plain Node consumers all work with the new output.
+
+### Migration
+No source change required for typical users. If you imported from a subpath of the package (e.g. `@axonsdk/mobile/src/hooks`), switch to the top-level import: `import { useAxon } from '@axonsdk/mobile'`. The internal file layout is no longer a stable interface.
+
+---
+
+## [@axonsdk/mobile@0.2.6] — 2026-04-22
+
+### Fixed
+- **Dependency pin:** `@axonsdk/sdk` dependency changed from floating `"*"` to `"^0.3.0"`. The floating range silently pulled in whichever sdk version was latest on the registry, including future breaking releases. Consumers on prior `@axonsdk/mobile` versions are unaffected at runtime but should upgrade to `0.2.6` for a stable transitive pin.
 
 ---
 
@@ -50,7 +67,7 @@ Anyone already running a bundle deployed via the `acurast`, `akash`, `fluence`, 
 - **CI:** Added Node.js 22 to test matrix (now tests on 20 and 22)
 - **CI:** Added `tsc --noEmit` type-check step before build in CI
 - **CI:** Added SBOM generation (`anchore/sbom-action`, SPDX format)
-- **Repository URLs:** All four `package.json` files corrected from `deyzho/axonsdk` to `deyzho/axon-ts`
+- **Repository URLs:** All four `package.json` files corrected from `deyzho/axonsdk` to `deyzho/axonsdk-ts`
 
 ### Fixed
 - Removed dev-only scripts from repo: `clean-phonix.ps1`, `commit-msg.txt`, `fix-rename.ps1`
@@ -101,7 +118,7 @@ Anyone already running a bundle deployed via the `acurast`, `akash`, `fluence`, 
 
 ---
 
-[@axonsdk/sdk@0.2.5]: https://github.com/deyzho/axon-ts/compare/sdk-v0.2.0...sdk-v0.2.5
-[@axonsdk/inference@0.1.5]: https://github.com/deyzho/axon-ts/compare/inference-v0.1.0...inference-v0.1.5
-[@axonsdk/sdk@0.2.0]: https://github.com/deyzho/axon-ts/compare/sdk-v0.1.0...sdk-v0.2.0
-[@axonsdk/sdk@0.1.0]: https://github.com/deyzho/axon-ts/releases/tag/sdk-v0.1.0
+[@axonsdk/sdk@0.2.5]: https://github.com/deyzho/axonsdk-ts/compare/sdk-v0.2.0...sdk-v0.2.5
+[@axonsdk/inference@0.1.5]: https://github.com/deyzho/axonsdk-ts/compare/inference-v0.1.0...inference-v0.1.5
+[@axonsdk/sdk@0.2.0]: https://github.com/deyzho/axonsdk-ts/compare/sdk-v0.1.0...sdk-v0.2.0
+[@axonsdk/sdk@0.1.0]: https://github.com/deyzho/axonsdk-ts/releases/tag/sdk-v0.1.0

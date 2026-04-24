@@ -40,16 +40,16 @@
     "tee",
     "depin"
   ],
-  "author": "Axon <deyzho@me.com>",
+  "author": "AxonSDK <deyzho@me.com>",
   "license": "Apache-2.0",
   "homepage": "https://axonsdk.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/deyzho/axon-ts.git",
+    "url": "https://github.com/deyzho/axonsdk-ts.git",
     "directory": "packages/sdk"
   },
   "bugs": {
-    "url": "https://github.com/deyzho/axon-ts/issues"
+    "url": "https://github.com/deyzho/axonsdk-ts/issues"
   },
   "engines": {
     "node": ">=20.0.0"

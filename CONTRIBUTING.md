@@ -1,6 +1,6 @@
-# Contributing to Axon SDK
+# Contributing to AxonSDK
 
-Thank you for your interest in contributing! Axon is an open-source project and all contributions are welcome — from bug reports and documentation fixes to new providers and templates.
+Thank you for your interest in contributing! AxonSDK is an open-source project and all contributions are welcome — from bug reports and documentation fixes to new providers and templates.
 
 ---
 
@@ -8,8 +8,8 @@ Thank you for your interest in contributing! Axon is an open-source project and 
 
 ```bash
 # Fork the repo on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/axonsdk.git
-cd axon
+git clone https://github.com/YOUR_USERNAME/axonsdk-ts.git
+cd axonsdk-ts
 
 # Install dependencies
 npm install
@@ -148,6 +148,29 @@ npx vitest run
 cd packages/sdk
 npx vitest
 ```
+
+---
+
+## Versioning policy
+
+AxonSDK follows [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). Because the project is pre-1.0, the rules are tighter than a simple reading of SemVer:
+
+- **`0.x.y`** — minor bumps (`0.x.Y`) may contain breaking changes, but every breaking change must be documented. Patch bumps (`0.X.y`) are strictly bug-fix / non-breaking.
+- **`≥1.0`** — breaking changes require a major bump. Deprecations are announced at least one minor version before removal.
+
+### Breaking-change requirements
+
+Every breaking change must:
+
+1. Be listed in `CHANGELOG.md` under a **Changed — Breaking** heading within the relevant package section.
+2. Include a **Migration** block with copy-pastable before/after snippets for anything a consumer might actually be doing. Don't make people read source code to upgrade.
+3. Be called out in the GitHub Release notes, not buried in the commit message.
+
+See [`[@axonsdk/sdk@0.3.0]` in CHANGELOG.md](./CHANGELOG.md) for an example.
+
+### Per-package versioning
+
+Each published package has its own version line in `CHANGELOG.md`. Bump only the packages you actually changed — don't synchronize versions across packages just for tidiness.
 
 ---
 
