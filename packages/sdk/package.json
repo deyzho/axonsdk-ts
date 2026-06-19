@@ -56,11 +56,11 @@
   },
   "dependencies": {
     "@acurast/dapp": "1.0.1",
-    "esbuild": "^0.20.0"
+    "esbuild": "^0.28.1"
   },
   "optionalDependencies": {
-    "@fluencelabs/cli": "^0.15.0",
-    "ethers": "^6.0.0"
+    "@fluencelabs/cli": "^0.16.3",
+    "ethers": "^6.17.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
