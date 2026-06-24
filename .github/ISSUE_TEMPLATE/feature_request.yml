@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before filing, please check the [ROADMAP](../ROADMAP.md) and search open issues — the feature may already be planned.
+        Before filing, please check the [Strategy doc](../docs/STRATEGY.md) and search open issues — the feature may already be planned.
   - type: textarea
     id: problem
     attributes:

@@ -193,16 +193,54 @@ To keep the positioning sharp, AxonSDK deliberately does **not**:
 8. Only then consider adding back additional providers — each must pass the same
    production-grade bar before leaving `experimental`.
 
-### Relationship to the existing ROADMAP.md
-This strategy **reframes priorities**; it doesn't discard the roadmap. Notable
-adjustments to weigh when planning releases:
-- The v1.0 hard requirement "all ten providers green" should become **"all
-  *supported* providers green"** — breadth across ten is explicitly a non-goal.
-- The v0.6 "LLM routing" theme should be **scoped down**: a unified LLM client is fine
-  as *fallback plumbing*, but it must not reposition AxonSDK as a universal hosted-LLM
-  router (that's the OpenRouter lane we avoid).
-- The v0.5 "Provider trust" theme is the **highest-leverage** existing work — it is the
-  on-ramp to the quality moat. Prioritize it.
+### Concrete deliverables (folded into the phases)
+
+This strategy is the single source of truth for direction. The concrete shippable
+work below is mapped onto the phases above — each item is reframed around the
+**supported set**, never the old ten-provider breadth (which is now an explicit
+non-goal).
+
+**Phase A — operability of the supported set**
+- **`axon logs <id>`** — stream processor stdout and runtime events from deployed scripts.
+- **`axon update <id>`** — redeploy existing code, preserving routing config.
+- **`axon stop <id>`** — cancel an active deployment cleanly (alias for `teardown`).
+- **Persistent leases** — auto-renew and monitor long-running deployments.
+- **Dashboard** — minimal web UI for managing deployments and viewing routing analytics.
+  Reads directly from provider APIs; no new server-side state.
+- **Coverage gate in CI** — enforce thresholds (target: 85% sdk, 80% monorepo) in
+  `.github/workflows/publish.yml`.
+
+**Phase B — the quality moat as the on-ramp**
+- This was the old "Provider trust" theme, and it is the **highest-leverage** work — it
+  is the on-ramp to the moat. Already covered by canary tasks, reliability scoring, and
+  the `quality` strategy above. `status.axonsdk.dev` publishes quality *and* uptime
+  history, not just current state.
+- **Template publishing / marketplace** (`axon template publish` / `install <name>`) —
+  community templates, scoped to the supported providers.
+
+**Phase C — fallback plumbing and selective expansion**
+- **`@axonsdk/llm`** — a unified LLM client is fine *only as fallback plumbing*. It must
+  **not** reposition AxonSDK as a universal hosted-LLM router (the OpenRouter/LiteLLM
+  lane we explicitly avoid).
+- **Streaming-first** — SSE becomes the default across inference routes; non-streaming
+  is an explicit flag.
+
+**Toward 1.0 (gating requirements, reframed)**
+- **All *supported* providers green** in CI against sandboxes at least weekly — *not*
+  "all ten."
+- At least one named **reference customer** for the cloud fallback, willing to be quoted.
+- **Deprecation policy in effect**: anything removed between 1.0 and 2.0 was `@deprecated`
+  with a console warning for ≥1 minor version.
+- **Docs site live** at `docs.axonsdk.dev` — full API reference, guides, `0.x → 1.0` migration.
+- **Semver-strict** commitment enforced by an exported-types-stability check.
+- **Zero `any` leaks** in the public API surface of `@axonsdk/sdk`.
+- **Security audit** of the runtime bootstrap, provider adapters, and secret-handling paths.
+
+**Later (post-1.0, no timeline)**
+- SLA routing · cost analytics · full Python runtime parity · VSCode extension ·
+  OpenTelemetry observability with per-provider spans.
+
+Versioning policy lives in [`CONTRIBUTING.md`](../CONTRIBUTING.md#versioning-policy).
 
 ---
 
