@@ -56,10 +56,10 @@
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.12",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.8.0",
     "@types/update-notifier": "^6.0.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   },
   "files": [
     "dist",
