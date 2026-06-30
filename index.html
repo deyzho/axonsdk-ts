@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AxonSDK — One SDK. Any compute. Route AI inference anywhere.</title>
-  <meta name="description" content="Universal AI compute routing SDK. Route inference to the fastest, cheapest backend — GPU clusters, cloud, edge, or your own infrastructure. One SDK. Zero lock-in." />
-  <meta property="og:title" content="AxonSDK — Route AI inference to any compute backend" />
-  <meta property="og:description" content="Drop in the OpenAI-compatible inference endpoint and your existing code automatically routes to the cheapest available GPU in two lines." />
+  <title>AxonSDK — Reliable inference for DePIN compute, with cloud fallback</title>
+  <meta name="description" content="The reliable inference layer for DePIN compute, with cloud fallback built in. Route AI inference to decentralized GPU, edge, and TEE networks — and route on verified output quality, not just cost and latency." />
+  <meta property="og:title" content="AxonSDK — Reliable inference for DePIN compute, with cloud fallback" />
+  <meta property="og:description" content="Drop in the OpenAI-compatible endpoint: route inference to DePIN GPU/edge/TEE networks with automatic cloud fallback and verified-quality routing — in two lines." />
   <meta property="og:url" content="https://ts.axonsdk.dev" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -358,10 +358,10 @@
 
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="badge">Open Source · v0.2.5 · 10 Providers · GPU + Edge + Cloud · Now on npm</div>
-  <h1>Route AI inference<br /><em>to any compute backend.</em></h1>
-  <p>OpenAI costs too much. You're locked into one vendor. Switching providers means rewriting your integration.<br/><strong style="color:var(--text)">AxonSDK fixes all three.</strong></p>
-  <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">AxonSDK is to AI compute what httpx is to HTTP —<br/>one client, any backend. Cloud, edge, or your own infrastructure.</p>
+  <div class="badge">Open Source · DePIN-first · Verified-quality routing · Cloud fallback · Now on npm</div>
+  <h1>Reliable inference<br /><em>for DePIN compute.</em></h1>
+  <p>OpenAI costs too much. Edge compute is cheaper but unproven.<br/><strong style="color:var(--text)">AxonSDK gives you DePIN economics with cloud-grade reliability — and routes on whether the output is actually correct.</strong></p>
+  <p style="font-size:0.9rem;color:var(--muted);margin-top:0.75rem;max-width:520px;margin-left:auto;margin-right:auto;">DePIN is the spear. Cloud is the shield.<br/>Verified quality is the moat.</p>
   <div class="hero-ctas">
     <a class="btn-primary" href="#inference">Switch from OpenAI →</a>
     <a class="btn-secondary" href="https://github.com/deyzho/axonsdk-ts" target="_blank">View on GitHub</a>
@@ -401,11 +401,11 @@
         <div class="section-label">OpenAI-compatible · @axonsdk/inference</div>
         <h2 class="section-title" style="margin-bottom:0.75rem;">Switch compute backends<br/>in two lines</h2>
         <p style="color:var(--muted);font-size:1rem;margin-bottom:1.5rem;">
-          Your existing OpenAI code works unchanged. Swap <code style="color:var(--accent);font-size:.9em">baseURL</code> and <code style="color:var(--accent);font-size:.9em">apiKey</code> — that's it. Requests route automatically to the cheapest available backend across GPU clusters, container compute, and TEE nodes.
+          Your existing OpenAI code works unchanged. Swap <code style="color:var(--accent);font-size:.9em">baseURL</code> and <code style="color:var(--accent);font-size:.9em">apiKey</code> — that's it. Requests route to DePIN GPU, container, and TEE backends first, with automatic cloud fallback when an edge node is slow, down, or fails a quality check.
         </p>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.75rem;">
           <li style="display:flex;gap:0.75rem;font-size:0.9rem;color:var(--muted)"><span style="color:var(--accent);font-weight:700;">✓</span> Works with the <code style="color:var(--accent);font-size:.85em">openai</code> npm package and any OpenAI-compatible tooling</li>
-          <li style="display:flex;gap:0.75rem;font-size:0.9rem;color:var(--muted)"><span style="color:var(--accent);font-weight:700;">✓</span> Streaming SSE, automatic failover, cost / latency routing</li>
+          <li style="display:flex;gap:0.75rem;font-size:0.9rem;color:var(--muted)"><span style="color:var(--accent);font-weight:700;">✓</span> Streaming SSE, automatic cloud fallback, cost / latency / quality routing</li>
           <li style="display:flex;gap:0.75rem;font-size:0.9rem;color:var(--muted)"><span style="color:var(--accent);font-weight:700;">✓</span> Next.js, Express, Cloudflare Workers — any Node.js HTTP server</li>
           <li style="display:flex;gap:0.75rem;font-size:0.9rem;color:var(--muted)"><span style="color:var(--accent);font-weight:700;">✓</span> ~$0.40/hr A100 spot vs $0.06/1K tokens on GPT-4</li>
         </ul>
@@ -489,15 +489,27 @@
 <section class="providers" id="providers">
   <div class="section-inner">
     <div class="section-label">Providers</div>
-    <h2 class="section-title">One SDK, any network</h2>
-    <p class="section-sub">Deploy the same AI workload to edge or cloud without rewriting your code. AxonSDK automatically routes to the fastest, cheapest option.</p>
+    <h2 class="section-title">Two tiers. One API.</h2>
+    <p class="section-sub">DePIN networks are the primary compute (Tier 1); a single cloud backend is automatic fallback (Tier 2). The supported set is small and production-hardened — everything else stays experimental.</p>
 
-    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Edge &amp; Private compute</p>
+    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Tier 1 — DePIN / edge / TEE · primary</p>
     <div class="provider-grid" style="margin-bottom:2.5rem;">
       <div class="provider-card">
         <div class="provider-header">
+          <div class="provider-name">Acurast</div>
+          <div class="provider-badge">TEE · Anchor</div>
+        </div>
+        <div class="provider-desc">The anchor of the DePIN tier. 237,000+ smartphone nodes running inside hardware Trusted Execution Environments. Your code and data are private — even from device owners.</div>
+        <div class="provider-meta">
+          <span>📱 TEE-based</span>
+          <span>🔑 P256 auth</span>
+          <span>⚡ nodejs / wasm</span>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-header">
           <div class="provider-name">io.net</div>
-          <div class="provider-badge">GPU · Live</div>
+          <div class="provider-badge">GPU · Supported</div>
         </div>
         <div class="provider-desc">GPU clusters — A100, H100, RTX 4090 spot compute at a fraction of cloud pricing. The best option for large model inference.</div>
         <div class="provider-meta">
@@ -509,33 +521,41 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Akash</div>
-          <div class="provider-badge">Live</div>
+          <div class="provider-badge">Supported</div>
         </div>
-        <div class="provider-desc">Open cloud marketplace where providers bid to run containerised workloads. Pay per use with no lock-in and no vendor overhead.</div>
+        <div class="provider-desc">Open marketplace where providers bid to run containerised workloads. Pay per use with no lock-in — strong economics for batch and async inference.</div>
         <div class="provider-meta">
           <span>☁️ Docker containers</span>
           <span>🔑 BIP-39 mnemonic</span>
           <span>⚡ nodejs / docker</span>
         </div>
       </div>
+    </div>
+
+    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Tier 2 — cloud fallback · insurance</p>
+    <div class="provider-grid" style="margin-bottom:2.5rem;">
       <div class="provider-card">
         <div class="provider-header">
-          <div class="provider-name">Acurast</div>
-          <div class="provider-badge">TEE · Live</div>
+          <div class="provider-name">Cloudflare Workers</div>
+          <div class="provider-badge">Fallback</div>
         </div>
-        <div class="provider-desc">237,000+ smartphone nodes running inside hardware Trusted Execution Environments. Your code and data are private — even from device owners.</div>
+        <div class="provider-desc">The boring, reliable floor beneath the DePIN tier. Edge Workers at 300+ PoPs with sub-millisecond cold starts — engaged automatically only when Tier 1 is unavailable or fails a quality check.</div>
         <div class="provider-meta">
-          <span>📱 TEE-based</span>
-          <span>🔑 P256 auth</span>
-          <span>⚡ nodejs / wasm</span>
+          <span>⚡ Workers · AI Gateway</span>
+          <span>🔑 API token</span>
+          <span>⚙️ nodejs / wasm</span>
         </div>
       </div>
+    </div>
+
+    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Experimental · usable, outside the supported set</p>
+    <div class="provider-grid">
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Fluence</div>
-          <div class="provider-badge">Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Serverless compute built on a peer-to-peer network. Deploy functions globally with no cold starts and no central point of failure.</div>
+        <div class="provider-desc">Serverless compute on a peer-to-peer network. No cold starts, no central point of failure.</div>
         <div class="provider-meta">
           <span>🌐 P2P relay</span>
           <span>🔑 Ed25519</span>
@@ -545,25 +565,21 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Koii</div>
-          <div class="provider-badge">Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Community-owned compute network with Solana-compatible task nodes. Ideal for recurring data tasks, oracles, and agent workloads.</div>
+        <div class="provider-desc">Community-owned compute with Solana-compatible task nodes. Good for recurring data tasks and oracles.</div>
         <div class="provider-meta">
           <span>🔗 Task nodes</span>
           <span>🔑 Solana keypair</span>
           <span>⚡ nodejs</span>
         </div>
       </div>
-    </div>
-
-    <p style="font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Cloud Providers</p>
-    <div class="provider-grid">
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">AWS</div>
-          <div class="provider-badge">Lambda · Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Lambda, ECS / Fargate, and EC2 via boto3. Same AxonSDK interface — no AWS SDK boilerplate.</div>
+        <div class="provider-desc">Lambda, ECS / Fargate, and EC2. Same AxonSDK interface — no AWS SDK boilerplate.</div>
         <div class="provider-meta">
           <span>⚡ Lambda · Fargate</span>
           <span>🔑 IAM credentials</span>
@@ -573,9 +589,9 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Google Cloud</div>
-          <div class="provider-badge">Cloud Run · Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Cloud Run and Cloud Functions via the Google Cloud Python SDK. Serverless containers in seconds.</div>
+        <div class="provider-desc">Cloud Run and Cloud Functions. Serverless containers in seconds.</div>
         <div class="provider-meta">
           <span>⚡ Cloud Run · Functions</span>
           <span>🔑 Service account</span>
@@ -585,9 +601,9 @@
       <div class="provider-card">
         <div class="provider-header">
           <div class="provider-name">Azure</div>
-          <div class="provider-badge">ACI · Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Container Instances and Azure Functions. Deploy Python or Node.js workloads with managed identity auth.</div>
+        <div class="provider-desc">Container Instances and Azure Functions with managed identity auth.</div>
         <div class="provider-meta">
           <span>⚡ ACI · Functions</span>
           <span>🔑 Service principal</span>
@@ -596,22 +612,10 @@
       </div>
       <div class="provider-card">
         <div class="provider-header">
-          <div class="provider-name">Cloudflare Workers</div>
-          <div class="provider-badge">Workers · Live</div>
-        </div>
-        <div class="provider-desc">Edge Workers at 300+ PoPs worldwide. Sub-millisecond cold starts, global by default.</div>
-        <div class="provider-meta">
-          <span>⚡ Workers · AI Gateway</span>
-          <span>🔑 API token</span>
-          <span>⚙️ nodejs / wasm</span>
-        </div>
-      </div>
-      <div class="provider-card">
-        <div class="provider-header">
           <div class="provider-name">Fly.io</div>
-          <div class="provider-badge">Machines · Live</div>
+          <div class="provider-badge">Experimental</div>
         </div>
-        <div class="provider-desc">Fly Machines — fast-booting Docker containers placed close to your users. Deploy globally with a single command.</div>
+        <div class="provider-desc">Fly Machines — fast-booting Docker containers placed close to your users.</div>
         <div class="provider-meta">
           <span>⚡ Fly Machines</span>
           <span>🔑 fly auth token</span>
@@ -957,19 +961,20 @@ client.<span class="fn">disconnect</span>();</pre>
     <div class="router-grid">
       <div>
         <div class="section-label">Smart Routing</div>
-        <h2 class="section-title">Route across providers — automatically</h2>
+        <h2 class="section-title">DePIN-first — fall back to cloud</h2>
         <p style="color:var(--muted);font-size:1rem;margin-bottom:1.75rem;">
-          <code style="font-size:.85em;color:var(--accent)">AxonRouter</code> manages multiple providers simultaneously.
-          On every request it scores each provider by health, latency, cost, and availability —
-          then sends to the best one. If that provider fails, it retries on the next.
-          Circuit breakers prevent routing to unhealthy nodes until they recover.
+          <code style="font-size:.85em;color:var(--accent)">AxonRouter</code> ranks DePIN backends (Tier 1) ahead of cloud (Tier 2),
+          so the cheap edge tier is tried first and cloud is engaged only as automatic fallback.
+          On every request it scores providers by health, latency, cost, and measured quality —
+          then sends to the best one. Circuit breakers keep traffic off unhealthy nodes until they recover.
         </p>
         <ul class="router-strategy-list">
-          <li><span class="tag">balanced</span><span class="desc">Equal weight across availability, latency, and cost — the safe default.</span></li>
+          <li><span class="tag">quality</span><span class="desc">Routes to the backend with the best measured output quality — the moat.</span></li>
+          <li><span class="tag">balanced</span><span class="desc">Weighs availability, latency, cost, and quality — the safe default.</span></li>
           <li><span class="tag">latency</span><span class="desc">Always picks the fastest-responding provider. Good for interactive workloads.</span></li>
           <li><span class="tag">availability</span><span class="desc">Maximises uptime. Prefers providers with the highest recent success rate.</span></li>
           <li><span class="tag">cost</span><span class="desc">Routes to the cheapest option. Ideal for batch and background jobs.</span></li>
-          <li><span class="tag">round-robin</span><span class="desc">Distributes load evenly across all callable providers.</span></li>
+          <li><span class="tag">round-robin</span><span class="desc">Distributes load evenly across the Tier-1 providers.</span></li>
         </ul>
         <p style="color:var(--muted);font-size:0.875rem;">
           Works on Node.js (SDK) and React Native (mobile). The same routing engine powers both.
@@ -980,20 +985,20 @@ client.<span class="fn">disconnect</span>();</pre>
 <span style="color:#fb923c">import</span> { AxonRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@axonsdk/sdk'</span>;
 
 <span style="color:#fb923c">const</span> router = <span style="color:#fb923c">new</span> <span style="color:#38bdf8">AxonRouter</span>({
-  providers: [<span style="color:#86efac">'akash'</span>, <span style="color:#86efac">'acurast'</span>],
+  providers: [<span style="color:#86efac">'acurast'</span>, <span style="color:#86efac">'ionet'</span>, <span style="color:#86efac">'akash'</span>, <span style="color:#86efac">'cloudflare'</span>],
   secretKey: process.env.AXON_SECRET_KEY,
-  strategy: <span style="color:#86efac">'latency'</span>,
+  strategy: <span style="color:#86efac">'quality'</span>,  <span style="color:#64748b">// DePIN first; Cloudflare is the fallback</span>
 });
 
 <span style="color:#fb923c">await</span> router.connect();
-<span style="color:#fb923c">await</span> router.deploy(config);  <span style="color:#64748b">// deploys to all providers</span>
+<span style="color:#fb923c">await</span> router.deploy(config);  <span style="color:#64748b">// deploys across your providers</span>
 
-<span style="color:#64748b">// Automatically picks fastest callable provider</span>
+<span style="color:#64748b">// Tier 1 first; cloud only if the DePIN tier is exhausted</span>
 <span style="color:#fb923c">await</span> router.send({ prompt: <span style="color:#86efac">'Hello'</span> });
 
-<span style="color:#64748b">// Health snapshot</span>
+<span style="color:#64748b">// Health snapshot — includes the rolling quality score</span>
 router.health().forEach(h =&gt; {
-  console.log(h.provider, h.latencyMs, h.circuitState);
+  console.log(h.provider, h.latencyMs, h.qualityScore, h.circuitState);
 });</code></pre>
         <pre class="code-block" style="font-size:0.78rem;margin-top:1rem;"><code><span style="color:#64748b">// Mobile (React Native / Expo)</span>
 <span style="color:#fb923c">import</span> { useAxonRouter } <span style="color:#fb923c">from</span> <span style="color:#86efac">'@axonsdk/mobile'</span>;
@@ -1019,7 +1024,7 @@ router.health().forEach(h =&gt; {
   <div class="section-inner">
     <div class="section-label">Features</div>
     <h2 class="section-title">Built for production</h2>
-    <p class="section-sub">Security and reliability are not afterthoughts — built into every layer of the SDK and covered by 200+ tests across all ten providers.</p>
+    <p class="section-sub">Security and reliability are not afterthoughts — built into every layer of the SDK and covered by 300+ tests.</p>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🔒</div>
@@ -1068,8 +1073,8 @@ router.health().forEach(h =&gt; {
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
-        <h3>Intelligent multi-provider routing</h3>
-        <p><code style="font-size:.8em;color:var(--accent)">AxonRouter</code> scores every provider on latency, availability, and cost in real time. Circuit breakers open on failure and recover automatically — zero downtime across all providers.</p>
+        <h3>Two-tier, quality-aware routing</h3>
+        <p><code style="font-size:.8em;color:var(--accent)">AxonRouter</code> scores providers on latency, availability, cost, and verified quality in real time — DePIN first, cloud as fallback. Circuit breakers open on failure and recover automatically for zero-downtime failover.</p>
       </div>
     </div>
   </div>

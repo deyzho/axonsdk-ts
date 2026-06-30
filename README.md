@@ -177,7 +177,7 @@ client.disconnect();
 
 ## OpenAI-compatible inference endpoint
 
-`@axonsdk/inference` is a drop-in replacement for the OpenAI API that routes requests to the fastest available backend. Switch your existing OpenAI integration in two lines:
+`@axonsdk/inference` is a drop-in replacement for the OpenAI API that routes requests to DePIN compute first, with automatic cloud fallback. Switch your existing OpenAI integration in two lines:
 
 ```typescript
 import OpenAI from 'openai';

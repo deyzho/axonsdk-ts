@@ -1,7 +1,7 @@
 {
   "name": "@axonsdk/sdk",
   "version": "0.3.0",
-  "description": "Provider-abstracted SDK for routing AI inference across edge and cloud compute — io.net, Akash, Acurast, Fluence, Koii, AWS, GCP, Azure, Cloudflare, and Fly.io.",
+  "description": "The reliable inference layer for DePIN compute, with cloud fallback built in. Two-tier, quality-aware routing across Acurast, io.net, and Akash (DePIN) with Cloudflare fallback.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

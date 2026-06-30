@@ -48,28 +48,29 @@ client.disconnect();
 
 ## Multi-provider Router
 
-Route across multiple providers simultaneously with automatic failover, circuit breaking, and health-based scoring:
+Route across your providers with a **two-tier** model — DePIN backends (Tier 1) first, cloud as automatic fallback (Tier 2) — with failover, circuit breaking, and quality-aware scoring:
 
 ```typescript
 import { AxonRouter } from '@axonsdk/sdk';
 
 const router = new AxonRouter({
-  providers: ['akash', 'acurast'],
+  providers: ['acurast', 'ionet', 'akash', 'cloudflare'], // DePIN first; Cloudflare is the fallback
   secretKey: process.env.AXON_SECRET_KEY,
-  strategy: 'latency',          // 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
+  strategy: 'quality',          // 'quality' | 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
   processorStrategy: 'fastest', // 'round-robin' | 'fastest' | 'random' | 'first'
   failureThreshold: 3,
   recoveryTimeoutMs: 30_000,
   maxRetries: 2,
+  // tierFallback: true (default) — cloud is reached only when the DePIN tier is exhausted
 });
 
 await router.connect();
-await router.deploy(config);     // deploys to ALL providers in parallel
+await router.deploy(config);     // deploys across your providers in parallel
 
-await router.send({ prompt: 'Hello' }); // auto-picks the best provider
+await router.send({ prompt: 'Hello' }); // Tier 1 first; cloud only on failure
 
 router.health().forEach((h) => {
-  console.log(h.provider, h.latencyMs, h.circuitState, h.score);
+  console.log(h.provider, h.latencyMs, h.qualityScore, h.circuitState, h.score);
 });
 ```
 
@@ -77,11 +78,14 @@ router.health().forEach((h) => {
 
 | Strategy | Best for |
 |---|---|
-| `balanced` | General purpose — equal weight on availability, latency, cost |
+| `quality` | Verified output — routes to the backend with the best measured quality (the moat) |
+| `balanced` | General purpose — weighs availability, latency, cost, and quality |
 | `latency` | Interactive workloads — always picks the fastest provider |
 | `availability` | High uptime — prefers the most reliable provider |
 | `cost` | Batch jobs — routes to the cheapest option |
 | `round-robin` | Even load distribution |
+
+Experimental providers (`fluence`, `koii`, `aws`, `gcp`, `azure`, `flyio`) remain usable but log a warning — the supported set is Acurast, io.net, Akash, and Cloudflare. Register **canary probes** with `router.registerCanary(...)` to feed the quality score. See the [strategy](../../docs/STRATEGY.md).
 
 ## Mobile (iOS & Android)
 

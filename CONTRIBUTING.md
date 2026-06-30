@@ -94,7 +94,9 @@ Each provider lives in `packages/sdk/src/providers/<name>/` and must:
 
 3. **Wire it in** (all of these must be updated):
    - `packages/sdk/src/types.ts` — add to `ProviderName` union
+   - `packages/sdk/src/providers/registry.ts` — add to `PROVIDER_REGISTRY` with its `tier` (`depin` / `cloud`) and `support` status
    - `packages/sdk/src/runtime/index.ts` — add `case` to `generateRuntimeBootstrap()`
+   - `packages/sdk/src/router/index.ts` — add `case` to `createProvider()`
    - `packages/sdk/src/client.ts` — add `case` to `createProvider()`
    - `packages/sdk/src/config.ts` — add to `VALID_PROVIDERS` and `generateEnv()`
    - `packages/sdk/src/index.ts` — export the provider class
@@ -109,12 +111,16 @@ Each provider lives in `packages/sdk/src/providers/<name>/` and must:
 
 5. **Update `@axonsdk/mobile`** if the provider can be called from a mobile app (add to `MobileProviderName`).
 
+> **New providers land as `support: 'experimental'`.** Per [`docs/STRATEGY.md`](./docs/STRATEGY.md), the supported set is deliberately small (Acurast, io.net, Akash, Cloudflare). A provider graduates to `supported` only after clearing the production-grade bar — real integration tests against a live sandbox, with green CI.
+
 ---
 
 ## Areas where contributions are most welcome
 
-- **Integration tests** against live provider sandboxes (Akash, Acurast testnet, io.net)
-- **New provider support** — AWS Lambda, Cloudflare Workers, Bacalhau, Render Network
+Priorities follow [`docs/STRATEGY.md`](./docs/STRATEGY.md) — depth on the supported set and the quality moat, not provider breadth:
+
+- **Production-hardening the supported providers** — integration tests against live sandboxes (Acurast, io.net, Akash, Cloudflare), with green CI
+- **The verified-quality layer** — canary probes, reliability scoring, and cross-provider consensus
 - **Template library** — web scraper, AI agent, ML pipeline, RAG pipeline
 - **Mobile examples** — Expo Snack demos, React Native starter kits
 - **Documentation** — guides, tutorials, and API reference improvements

@@ -1,7 +1,7 @@
 {
   "name": "@axonsdk/cli",
   "version": "0.1.6",
-  "description": "Command-line tool for deploying and managing AI workloads across edge and cloud compute providers.",
+  "description": "Command-line tool for deploying and managing AI workloads on DePIN compute, with cloud fallback.",
   "type": "module",
   "bin": {
     "axon": "./dist/index.js"

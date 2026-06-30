@@ -1,7 +1,7 @@
 {
   "name": "@axonsdk/inference",
   "version": "0.1.6",
-  "description": "OpenAI-compatible inference endpoint that automatically routes requests to the fastest, cheapest available compute backend.",
+  "description": "OpenAI-compatible inference endpoint that routes requests to DePIN compute first, with automatic cloud fallback and quality-aware routing.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
