@@ -7,6 +7,23 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [Unreleased]
+
+Implements the foundation of the DePIN-first, two-tier strategy (see [`docs/STRATEGY.md`](./docs/STRATEGY.md)).
+
+### Added
+
+- **Provider tier registry** (`@axonsdk/sdk`): `PROVIDER_REGISTRY` plus `providerTier`/`isSupported`/`isExperimental` helpers and `SUPPORTED_PROVIDERS`/`DEPIN_PROVIDERS`/`CLOUD_PROVIDERS`. Designates the supported set — Acurast (anchor), io.net, Akash on the DePIN tier and Cloudflare as the cloud fallback — and marks fluence/koii/aws/gcp/azure/flyio `experimental`.
+- **`quality` routing strategy**: routes on a measured per-provider quality signal (the moat), not just cost/latency/availability. Quality is also folded into `balanced`. New `recordQuality`/`quality` on the health monitor and `qualityScore` on `ProviderHealthSnapshot`.
+- **Canary quality probes** (`CanaryRunner`, `CanaryProbe`): known-answer probe scaffolding that feeds the quality score, with `AxonRouter.registerCanary()` / `runCanary()`. Deterministic known-answer path only; live cross-provider text-gen correlation is a documented follow-up.
+- **`RouterConfig.tierFallback`** (default `true`) and **`canarySamplePct`** (default `0`); new `canary:passed` / `canary:failed` router events.
+
+### Changed
+
+- **Two-tier routing**: `AxonRouter` now ranks DePIN providers (Tier 1) ahead of cloud providers (Tier 2), so cloud is reached only as automatic fallback when the DePIN tier is exhausted. Set `tierFallback: false` to rank all providers in a single pool (previous behaviour). All cloud providers are now registerable in the router (previously only the 5 DePIN providers were). Configuring an `experimental` provider logs a one-time warning. Backward-compatible: existing `RouterConfig` callers are unaffected.
+
+---
+
 ## [@axonsdk/mobile@0.2.7] — 2026-04-22
 
 ### Changed

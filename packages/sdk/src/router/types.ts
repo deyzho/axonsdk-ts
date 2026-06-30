@@ -16,6 +16,7 @@ export type RoutingStrategy =
   | 'cost'
   | 'latency'
   | 'availability'
+  | 'quality'
   | 'round-robin'
   | 'balanced';
 
@@ -58,6 +59,19 @@ export interface RouterConfig {
   retryDelayMs?: number;
 
   /**
+   * When true (default), DePIN providers (Tier 1) are always ranked ahead of
+   * cloud providers (Tier 2), so cloud is used only as fallback. Set false to
+   * rank all providers in a single pool regardless of tier.
+   */
+  tierFallback?: boolean;
+
+  /**
+   * Fraction (0–1) of sends that also trigger a quality canary probe against the
+   * selected provider. Default: 0 (canaries off). Requires registered probes.
+   */
+  canarySamplePct?: number;
+
+  /**
    * Optional per-provider WebSocket URL overrides.
    * Key: provider name. Value: URL string.
    */
@@ -74,6 +88,8 @@ export interface ProviderHealthSnapshot {
   successRate: number;
   totalRequests: number;
   estimatedCostUsd: number;
+  /** Rolling quality score in [0, 1] from canary probes. Defaults to 1 until measured. */
+  qualityScore: number;
 }
 
 // ─── Router deployment ────────────────────────────────────────────────────────
@@ -105,7 +121,9 @@ export type RouterEventType =
   | 'circuit:opened'
   | 'circuit:closed'
   | 'retry'
-  | 'failover';
+  | 'failover'
+  | 'canary:passed'
+  | 'canary:failed';
 
 export interface RouterEvent {
   type: RouterEventType;

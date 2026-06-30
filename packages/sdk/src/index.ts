@@ -11,6 +11,18 @@ export type { AxonClientOptions } from './client.js';
 // Provider interface
 export type { IAxonProvider } from './providers/base.js';
 
+// Provider tier registry — two-tier (DePIN / cloud) routing classification
+export {
+  PROVIDER_REGISTRY,
+  providerTier,
+  isSupported,
+  isExperimental,
+  SUPPORTED_PROVIDERS,
+  DEPIN_PROVIDERS,
+  CLOUD_PROVIDERS,
+} from './providers/registry.js';
+export type { ProviderTier, SupportStatus, ProviderMeta } from './providers/registry.js';
+
 // Provider implementations
 export { AcurastProvider } from './providers/acurast/index.js';
 export { FluenceProvider } from './providers/fluence/index.js';
@@ -77,3 +89,7 @@ export type {
   ProcessorStrategy,
   CircuitState,
 } from './router/types.js';
+
+// Canary quality probes — the measurement layer behind the `quality` strategy
+export { CanaryRunner } from './router/canary.js';
+export type { CanaryProbe, CanaryResult, QualitySink, CanaryResultHandler } from './router/canary.js';

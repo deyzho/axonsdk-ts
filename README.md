@@ -5,7 +5,7 @@
 [![Node](https://img.shields.io/node/v/@axonsdk/sdk)](https://nodejs.org)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-**[axonsdk.dev](https://axonsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [Roadmap](./ROADMAP.md) · [GitHub](https://github.com/deyzho/axonsdk-ts)**
+**[axonsdk.dev](https://axonsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [Strategy](./docs/STRATEGY.md) · [GitHub](https://github.com/deyzho/axonsdk-ts)**
 
 **One SDK. Any compute. Route AI inference to the fastest, cheapest backend — cloud, edge, or your own infrastructure.**
 
