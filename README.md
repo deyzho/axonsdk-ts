@@ -7,39 +7,41 @@
 
 **[axonsdk.dev](https://axonsdk.dev) · [npm](https://www.npmjs.com/org/axonsdk) · [Strategy](./docs/STRATEGY.md) · [GitHub](https://github.com/deyzho/axonsdk-ts)**
 
-**One SDK. Any compute. Route AI inference to the fastest, cheapest backend — cloud, edge, or your own infrastructure.**
+**The reliable inference layer for DePIN compute — with cloud fallback built in.**
 
-AxonSDK is a universal AI compute routing layer. Stop rewriting integrations every time you switch providers, hit rate limits, or find a cheaper GPU. Point AxonSDK at any backend — GPU clusters, container clouds, serverless functions, TEE enclaves, or your own servers — and it handles routing, failover, and cost optimisation automatically.
+AxonSDK routes AI inference to decentralized (DePIN) GPU, edge, and TEE networks — structurally cheaper than hyperscale clouds — and automatically falls back to a cloud backend when edge nodes are slow, unavailable, or fail a quality check. You get DePIN economics with cloud-grade reliability, behind one OpenAI-compatible API.
 
-Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing code routes to a new backend in two lines. Call your deployed processors from **iOS and Android** with `@axonsdk/mobile`.
+What makes it more than a router: a **verified-quality** layer that measures whether distributed inference output is actually correct and routes on that signal — not just cost, latency, and availability.
 
-> AxonSDK is to AI compute what httpx is to HTTP — **one client, any backend**.
+Drop in the OpenAI-compatible `@axonsdk/inference` package and your existing code routes in two lines. Call your deployed processors from **iOS and Android** with `@axonsdk/mobile`.
+
+> **DePIN is the spear. Cloud is the shield. Verified quality is the moat.** — see the [strategy](./docs/STRATEGY.md).
 
 ---
 
-## Supported providers
+## Providers
 
-### Edge & private compute
+AxonSDK uses a **two-tier** model: DePIN / edge / TEE networks are the primary compute (Tier 1), with a single cloud backend as automatic fallback (Tier 2). The supported set is deliberately small and production-hardened — other integrations remain usable but are marked `experimental`.
+
+### Tier 1 — DePIN / edge / TEE (primary)
 
 | Provider | Status | Nodes | Runtime | Cost |
 |---|---|---|---|---|
-| [io.net](https://io.net) | ✅ Live | GPU clusters (A100, H100, RTX) | nodejs, python | ~$0.40/hr GPU spot |
-| [Akash Network](https://akash.network) | ✅ Live | Container compute marketplace | nodejs, docker | Pay-per-use |
-| [Acurast](https://acurast.com) | ✅ Live | 237k+ mobile TEE nodes | nodejs, wasm | Pay-per-execution |
-| [Fluence](https://fluence.network) | ✅ Live | Serverless function compute | nodejs | Pay-per-ms |
-| [Koii](https://koii.network) | ✅ Live | Distributed task nodes | nodejs | Pay-per-task |
+| [Acurast](https://acurast.com) | ⚓ Anchor | 237k+ mobile TEE nodes | nodejs, wasm | Pay-per-execution |
+| [io.net](https://io.net) | ✅ Supported | GPU clusters (A100, H100, RTX) | nodejs, python | ~$0.40/hr GPU spot |
+| [Akash Network](https://akash.network) | ✅ Supported | Container compute marketplace | nodejs, docker | Pay-per-use |
 
-### Cloud providers
+### Tier 2 — cloud fallback (insurance)
 
 | Provider | Status | Services | Runtime |
 |---|---|---|---|
-| [AWS](https://aws.amazon.com) | ✅ Live | Lambda, ECS / Fargate, EC2 | python, nodejs, docker |
-| [Google Cloud](https://cloud.google.com) | ✅ Live | Cloud Run, Cloud Functions | python, nodejs, docker |
-| [Azure](https://azure.microsoft.com) | ✅ Live | Container Instances, Functions | python, nodejs, docker |
-| [Cloudflare Workers](https://workers.cloudflare.com) | ✅ Live | Workers, R2, AI Gateway | nodejs, wasm |
-| [Fly.io](https://fly.io) | ✅ Live | Fly Machines | python, nodejs, docker |
+| [Cloudflare Workers](https://workers.cloudflare.com) | ✅ Supported | Workers, R2, AI Gateway | nodejs, wasm |
 
-> **Provider health dashboard:** Real-time status and latency for all networks → [status.axonsdk.dev](https://status.axonsdk.dev)
+### Experimental
+
+Usable, but outside the supported two-tier set (the router logs a warning when you select one): [Fluence](https://fluence.network), [Koii](https://koii.network), [AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com), [Azure](https://azure.microsoft.com), [Fly.io](https://fly.io).
+
+> **Provider health dashboard:** real-time status and latency for the supported networks → [status.axonsdk.dev](https://status.axonsdk.dev)
 
 ---
 
@@ -229,30 +231,31 @@ The handler implements streaming (SSE) and non-streaming, bearer auth, automatic
 
 ## Multi-provider Router
 
-`AxonRouter` routes requests across multiple providers simultaneously, picking the best one on every call based on real-time latency, cost, and availability.
+`AxonRouter` routes across your providers using the **two-tier** model — DePIN backends (Tier 1) first, cloud as automatic fallback (Tier 2) — picking the best one on every call based on real-time latency, cost, availability, and measured quality.
 
 ```typescript
 import { AxonRouter } from '@axonsdk/sdk';
 
 const router = new AxonRouter({
-  providers: ['ionet', 'akash', 'acurast'],
+  providers: ['acurast', 'ionet', 'akash', 'cloudflare'], // DePIN first; Cloudflare is the fallback
   secretKey: process.env.AXON_SECRET_KEY,
-  strategy: 'latency',          // 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
+  strategy: 'quality',          // 'quality' | 'balanced' | 'latency' | 'availability' | 'cost' | 'round-robin'
   processorStrategy: 'fastest', // 'round-robin' | 'fastest' | 'random' | 'first'
   failureThreshold: 3,          // open circuit after 3 consecutive failures
   recoveryTimeoutMs: 30_000,
   maxRetries: 2,
+  // tierFallback: true (default) — cloud is reached only when the DePIN tier is exhausted
 });
 
 await router.connect();
 await router.deploy({ runtime: 'nodejs', code: './dist/index.js', ... });
 
-// Automatically picks the highest-scoring provider
+// Always routes to Tier 1 first; falls through to the cloud backend only on failure
 await router.send({ prompt: 'Hello' });
 
-// Health snapshot
+// Health snapshot — includes the rolling quality score
 router.health().forEach((h) => {
-  console.log(h.provider, h.latencyMs, h.circuitState, h.score);
+  console.log(h.provider, h.latencyMs, h.qualityScore, h.circuitState, h.score);
 });
 
 router.disconnect();
@@ -262,11 +265,24 @@ router.disconnect();
 
 | Strategy | Best for |
 |---|---|
-| `balanced` | General purpose — equal weight on availability, latency, cost |
+| `quality` | Verified output — routes to the backend with the best measured quality (the moat) |
+| `balanced` | General purpose — weighs availability, latency, cost, and quality |
 | `latency` | Interactive workloads — always picks the fastest provider |
 | `availability` | High uptime — prefers the most reliable provider |
 | `cost` | Batch jobs — routes to the cheapest option |
 | `round-robin` | Even load distribution |
+
+### Verified-quality routing (the moat)
+
+Edge nodes vary — a misquantized build on a random node can return subtly broken output that TEE attestation alone won't catch. Register **canary probes** (known-answer requests) and AxonSDK measures each backend's output quality, feeding the `quality` and `balanced` strategies so traffic flows to backends that are actually correct.
+
+```typescript
+router.registerCanary({
+  id: 'embed-sanity',
+  payload: { input: 'the quick brown fox' },
+  validate: (res) => Array.isArray(res) && res.length === 1536, // known-good shape
+});
+```
 
 ---
 
@@ -399,8 +415,8 @@ npm test
 Pull requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
 High-impact areas:
-- Integration tests against live provider sandboxes
-- Additional cloud provider support
+- Production-hardening the supported providers — integration tests against live provider sandboxes
+- The verified-quality layer — canary probes and cross-provider consensus
 - Template library
 
 ---
