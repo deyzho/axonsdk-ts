@@ -11,6 +11,9 @@
 const EMA_α = 0.2;
 const OPTIMISTIC_INITIAL_LATENCY = 500;
 const OPTIMISTIC_INITIAL_COST = 0;
+// Untested providers are assumed good (1.0) so they aren't penalised before any
+// quality measurement (e.g. a canary probe) has run against them.
+const OPTIMISTIC_INITIAL_QUALITY = 1;
 
 interface Sample {
   ts: number;
@@ -22,6 +25,7 @@ export class ProviderHealthMonitor {
   private samples: Sample[] = [];
   private emaLatency = OPTIMISTIC_INITIAL_LATENCY;
   private emaCostUsd = OPTIMISTIC_INITIAL_COST;
+  private emaQuality = OPTIMISTIC_INITIAL_QUALITY;
   private readonly windowMs: number;
 
   constructor(windowMs = 60_000) {
@@ -36,6 +40,15 @@ export class ProviderHealthMonitor {
 
   recordCost(usd: number): void {
     this.emaCostUsd = EMA_α * usd + (1 - EMA_α) * this.emaCostUsd;
+  }
+
+  /**
+   * Record a quality observation in [0, 1] (e.g. a canary probe result, where
+   * 1 = passed, 0 = failed). Feeds the `quality` routing strategy.
+   */
+  recordQuality(score0to1: number): void {
+    const clamped = Math.max(0, Math.min(1, score0to1));
+    this.emaQuality = EMA_α * clamped + (1 - EMA_α) * this.emaQuality;
   }
 
   private _evict(): void {
@@ -61,6 +74,11 @@ export class ProviderHealthMonitor {
     return this.emaCostUsd;
   }
 
+  /** Rolling quality score in [0, 1]. Defaults to 1 until measured. */
+  get quality(): number {
+    return this.emaQuality;
+  }
+
   get total(): number {
     return this.samples.length;
   }
@@ -69,5 +87,6 @@ export class ProviderHealthMonitor {
     this.samples = [];
     this.emaLatency = OPTIMISTIC_INITIAL_LATENCY;
     this.emaCostUsd = OPTIMISTIC_INITIAL_COST;
+    this.emaQuality = OPTIMISTIC_INITIAL_QUALITY;
   }
 }

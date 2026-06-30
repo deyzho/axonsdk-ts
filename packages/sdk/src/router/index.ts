@@ -16,10 +16,18 @@ import { FluenceProvider } from '../providers/fluence/index.js';
 import { KoiiProvider } from '../providers/koii/index.js';
 import { AkashProvider } from '../providers/akash/index.js';
 import { IoNetProvider } from '../providers/ionet/index.js';
+import { AwsProvider } from '../providers/aws/index.js';
+import { GcpProvider } from '../providers/gcp/index.js';
+import { AzureProvider } from '../providers/azure/index.js';
+import { CloudflareProvider } from '../providers/cloudflare/index.js';
+import { FlyioProvider } from '../providers/flyio/index.js';
+import { providerTier, isExperimental } from '../providers/registry.js';
 import { CircuitBreaker } from './circuit-breaker.js';
 import { ProviderHealthMonitor } from './health-monitor.js';
 import { ProcessorSelector } from './processor-selector.js';
 import { score } from './strategy.js';
+import { CanaryRunner } from './canary.js';
+import type { CanaryProbe, CanaryResult } from './canary.js';
 import type {
   RouterConfig,
   RouterDeployment,
@@ -39,11 +47,18 @@ interface ProviderEntry {
 
 function createProvider(name: ProviderName, wsUrl?: string): IAxonProvider {
   switch (name) {
-    case 'acurast': return new AcurastProvider(wsUrl);
-    case 'fluence': return new FluenceProvider();
-    case 'koii':    return new KoiiProvider();
-    case 'akash':   return new AkashProvider();
-    case 'ionet':   return new IoNetProvider();
+    // Tier 1 — DePIN / edge / TEE
+    case 'acurast':    return new AcurastProvider(wsUrl);
+    case 'ionet':      return new IoNetProvider();
+    case 'akash':      return new AkashProvider();
+    case 'fluence':    return new FluenceProvider();
+    case 'koii':       return new KoiiProvider();
+    // Tier 2 — cloud fallback
+    case 'cloudflare': return new CloudflareProvider();
+    case 'aws':        return new AwsProvider();
+    case 'gcp':        return new GcpProvider();
+    case 'azure':      return new AzureProvider();
+    case 'flyio':      return new FlyioProvider();
     default: throw new AxonError(`Unknown provider: ${String(name)}`);
   }
 }
@@ -54,6 +69,7 @@ export class AxonRouter {
   private rrProviderIndex = 0;
   private readonly cfg: Required<Omit<RouterConfig, 'wsUrls'>> & { wsUrls: RouterConfig['wsUrls'] };
   private eventHandlers: RouterEventHandler[] = [];
+  private readonly canary: CanaryRunner;
 
   constructor(config: RouterConfig) {
     const {
@@ -66,12 +82,31 @@ export class AxonRouter {
       healthWindowMs = 60_000,
       maxRetries = 2,
       retryDelayMs = 200,
+      tierFallback = true,
+      canarySamplePct = 0,
       wsUrls,
     } = config;
 
-    this.cfg = { providers, secretKey, strategy, processorStrategy, failureThreshold, recoveryTimeoutMs, healthWindowMs, maxRetries, retryDelayMs, wsUrls };
+    this.cfg = { providers, secretKey, strategy, processorStrategy, failureThreshold, recoveryTimeoutMs, healthWindowMs, maxRetries, retryDelayMs, tierFallback, canarySamplePct, wsUrls };
+
+    this.canary = new CanaryRunner(canarySamplePct, (r) =>
+      this._emit({
+        type: r.passed ? 'canary:passed' : 'canary:failed',
+        provider: r.provider,
+        detail: r.probeId,
+        timestamp: r.at,
+      }),
+    );
 
     for (const name of providers) {
+      // Demoted providers are usable but explicitly outside the supported two-tier
+      // model (see docs/STRATEGY.md). Warn once so operators choose them deliberately.
+      if (isExperimental(name)) {
+        console.warn(
+          `[axon] provider '${name}' is experimental and not part of the supported set ` +
+            `(Acurast, io.net, Akash, Cloudflare). See docs/STRATEGY.md.`,
+        );
+      }
       const wsUrl = wsUrls?.[name];
       this.entries.set(name, {
         provider: createProvider(name, wsUrl),
@@ -205,6 +240,7 @@ export class AxonRouter {
       successRate: e.health.successRate,
       totalRequests: e.health.total,
       estimatedCostUsd: e.health.costUsd,
+      qualityScore: e.health.quality,
     }));
   }
 
@@ -223,35 +259,112 @@ export class AxonRouter {
     }
   }
 
+  // ─── Canary quality probes ────────────────────────────────────────────────
+
+  /** Register a known-answer probe used to measure provider output quality. */
+  registerCanary(probe: CanaryProbe): void {
+    this.canary.register(probe);
+  }
+
+  /**
+   * Run a single canary probe against a provider: send the probe payload, await
+   * the correlated response, validate it, and feed the verdict into the
+   * provider's rolling quality score (which `quality`/`balanced` routing uses).
+   *
+   * Correlation is heuristic — the first incoming message that `validate()`s is
+   * treated as the response; a timeout counts as a failed probe. Robust
+   * cross-provider correlation is the documented follow-up (see canary.ts).
+   *
+   * @returns the result, or null if the provider isn't registered / no probe exists.
+   */
+  async runCanary(
+    provider: ProviderName,
+    probe?: CanaryProbe,
+    timeoutMs = 5_000,
+  ): Promise<CanaryResult | null> {
+    const entry = this.entries.get(provider);
+    if (!entry) return null;
+    const chosen = probe ?? this.canary.pick();
+    if (!chosen) return null;
+
+    const processorIds = entry.processorIds.length > 0 ? entry.processorIds : ['default'];
+    const processorId = entry.selector.next(processorIds, this.cfg.processorStrategy);
+
+    const t0 = Date.now();
+    const response = await this._awaitProbeResponse(entry, processorId, chosen, timeoutMs);
+    const latencyMs = Date.now() - t0;
+    return this.canary.record(provider, chosen, response, latencyMs, entry.health);
+  }
+
   // ─── Internal ───────────────────────────────────────────────────────────────
 
-  private _rankProviders(prefer?: ProviderName): ProviderName[] {
-    const strategy = this.cfg.strategy;
+  private _awaitProbeResponse(
+    entry: ProviderEntry,
+    processorId: string,
+    probe: CanaryProbe,
+    timeoutMs: number,
+  ): Promise<unknown> {
+    return new Promise((resolve) => {
+      let settled = false;
+      const finish = (resp: unknown) => {
+        if (settled) return;
+        settled = true;
+        unsub();
+        clearTimeout(timer);
+        resolve(resp);
+      };
+      const unsub = entry.provider.onMessage((msg) => {
+        if (probe.validate(msg.payload)) finish(msg.payload);
+      });
+      const timer = setTimeout(() => finish(undefined), timeoutMs);
+      entry.provider.send(processorId, probe.payload).catch(() => finish(undefined));
+    });
+  }
 
-    if (strategy === 'round-robin') {
-      const start = this.rrProviderIndex;
-      this.rrProviderIndex = (this.rrProviderIndex + 1) % this.rrOrder.length;
-      const ordered: ProviderName[] = [];
-      for (let i = 0; i < this.rrOrder.length; i++) {
-        ordered.push(this.rrOrder[(start + i) % this.rrOrder.length]);
-      }
-      return ordered;
+  private _rankProviders(prefer?: ProviderName): ProviderName[] {
+    const all = [...this.entries.keys()];
+
+    // Advance the round-robin cursor once per ranking (not once per tier).
+    let rrStart = 0;
+    if (this.cfg.strategy === 'round-robin') {
+      rrStart = this.rrProviderIndex;
+      this.rrProviderIndex = (this.rrProviderIndex + 1) % Math.max(1, this.rrOrder.length);
     }
 
-    const scored = [...this.entries.entries()]
-      .map(([name, e]) => ({
-        name,
-        s: score(strategy, { health: e.health, circuit: e.circuit }),
-      }))
-      .sort((a, b) => b.s - a.s)
-      .map(x => x.name);
+    const rank = (names: ProviderName[]): ProviderName[] => {
+      if (names.length === 0) return [];
+      if (this.cfg.strategy === 'round-robin') {
+        const start = rrStart % names.length;
+        const out: ProviderName[] = [];
+        for (let i = 0; i < names.length; i++) out.push(names[(start + i) % names.length]);
+        return out;
+      }
+      return names
+        .map((name) => {
+          const e = this.entries.get(name)!;
+          return { name, s: score(this.cfg.strategy, { health: e.health, circuit: e.circuit }) };
+        })
+        .sort((a, b) => b.s - a.s)
+        .map((x) => x.name);
+    };
+
+    // Two-tier: rank within DePIN (Tier 1) and cloud (Tier 2) separately, then
+    // concatenate so cloud is reached only after every Tier-1 provider is
+    // exhausted. Disable via `tierFallback: false` to rank as a single pool.
+    let ordered: ProviderName[];
+    if (this.cfg.tierFallback) {
+      ordered = [
+        ...rank(all.filter((n) => providerTier(n) === 'depin')),
+        ...rank(all.filter((n) => providerTier(n) === 'cloud')),
+      ];
+    } else {
+      ordered = rank(all);
+    }
 
     if (prefer && this.entries.has(prefer)) {
-      const rest = scored.filter(n => n !== prefer);
-      return [prefer, ...rest];
+      return [prefer, ...ordered.filter((n) => n !== prefer)];
     }
-
-    return scored;
+    return ordered;
   }
 
   private _emit(event: RouterEvent): void {
